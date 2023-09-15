@@ -27,3 +27,11 @@ model User {
   token      String?     @db.LongText()
   profile    Profile?
 }
+
+model Catalogue {
+  id            String      @db.VarChar(255) @unique
+  name          String      @unique
+  description   String?     @db.LongText()
+  url           String      @db.VarChar(255)
+  photoUrl      String?     @db.VarChar(255)
+}
