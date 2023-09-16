@@ -1,4 +1,3 @@
-import NextUIProviderClient from "@/providers/next-ui-provider";
 import "./globals.css";
 import type { Metadata } from "next";
 
@@ -14,9 +13,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body>
-        <NextUIProviderClient>{children}</NextUIProviderClient>
-      </body>
+      <body>{children}</body>
     </html>
   );
 }
