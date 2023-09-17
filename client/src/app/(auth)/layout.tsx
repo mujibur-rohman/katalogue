@@ -1,15 +1,15 @@
 function AuthLayout({ children }: { children: React.ReactNode }) {
   return (
     <div className="min-h-screen flex justify-center items-center overflow-x-hidden">
-      <div className="flex flex-col gap-5 w-[90vw] md:w-[50vw] lg:w-[30vw]">
-        {/* <div className="flex flex-col gap-4 items-center">
+      <div className="flex flex-col gap-5 w-[90vw] md:w-[55vw] lg:w-[37vw]">
+        <div className="border-divider rounded-lg p-5">{children}</div>
+        <div className="flex flex-col gap-4 items-center">
           <img
             src="assets/images/logo.png"
             alt="logo"
             className="w-[12rem] h-auto"
           />
-        </div> */}
-        <div className="border-divider rounded-lg p-5">{children}</div>
+        </div>
       </div>
     </div>
   );
