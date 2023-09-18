@@ -13,13 +13,21 @@ import { v4 as uuid } from "uuid";
 const register = async (request: any) => {
   const user = validate(registerValidation, request);
 
+  if (user.provider === "google") {
+    throw new ResponseError(400, "provider must credential provider");
+  }
+
+  if (user.provider === "credential" && !user.password) {
+    throw new ResponseError(400, "password is required");
+  }
+
   /* 
     Check if user exist
   */
 
   const userExist = await db.user.count({
     where: {
-      username: user.username,
+      email: user.email,
     },
   });
 
@@ -36,8 +44,9 @@ const register = async (request: any) => {
     },
     select: {
       id: true,
-      username: true,
+      email: true,
       name: true,
+      provider: true,
     },
   });
 };
@@ -47,11 +56,11 @@ const login = async (request: any) => {
 
   const user = await db.user.findUnique({
     where: {
-      username: userValid.username,
+      email: userValid.email,
     },
     select: {
       id: true,
-      username: true,
+      email: true,
       password: true,
       name: true,
       profile: true,
@@ -59,7 +68,11 @@ const login = async (request: any) => {
   });
 
   if (!user) {
-    throw new ResponseError(403, "username not registered");
+    throw new ResponseError(403, "email not registered");
+  }
+
+  if (!user.password) {
+    throw new ResponseError(403, "account as google provider");
   }
 
   const isPasswordValid = await bcrypt.compare(
@@ -73,7 +86,7 @@ const login = async (request: any) => {
 
   const accessToken = signJWT(
     {
-      username: user.username,
+      email: user.email,
       id: user.id,
     },
     {
@@ -82,7 +95,7 @@ const login = async (request: any) => {
   );
   const refreshToken = signJWT(
     {
-      username: user.username,
+      email: user.email,
       id: user.id,
     },
     {
@@ -95,17 +108,17 @@ const login = async (request: any) => {
       token: refreshToken,
     },
     where: {
-      username: user.username,
+      email: user.email,
     },
     select: {
-      username: true,
+      email: true,
     },
   });
 
   return {
     id: user.id,
     name: user.name,
-    username: user.username,
+    email: user.email,
     profilePicture: user.profile?.profilePicture || null,
     token: {
       accessToken,
@@ -122,7 +135,7 @@ const refreshToken = async (request: any) => {
     },
     select: {
       token: true,
-      username: true,
+      email: true,
       id: true,
     },
   });
@@ -131,7 +144,7 @@ const refreshToken = async (request: any) => {
 
   const newAccessToken = signJWT(
     {
-      username: refreshToken.username,
+      email: refreshToken.email,
       id: refreshToken.id,
     },
     {
@@ -140,7 +153,7 @@ const refreshToken = async (request: any) => {
   );
   const newRefreshToken = signJWT(
     {
-      username: refreshToken.username,
+      email: refreshToken.email,
       id: refreshToken.id,
     },
     {
@@ -153,7 +166,7 @@ const refreshToken = async (request: any) => {
       token: newRefreshToken,
     },
     where: {
-      username: refreshToken.username,
+      email: refreshToken.email,
     },
   });
 

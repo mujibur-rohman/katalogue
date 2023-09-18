@@ -1,16 +1,56 @@
 "use client";
 
+import { signIn, useSession } from "next-auth/react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
 import { cn } from "@/lib/utils";
 import { EyeIcon, EyeOffIcon, XIcon } from "lucide-react";
 import { useState } from "react";
+import * as yup from "yup";
+import { FormikConfig, useFormik } from "formik";
+import Link from "next/link";
+import { LoginType } from "@/lib/types/auth.type";
+import { useRouter } from "next/navigation";
 
 function Login() {
   const [togglePassword, setTogglePassword] = useState(true);
-  const [errorServer, setErrorServer] = useState(true);
+  const [errorServer, setErrorServer] = useState("");
+  const session = useSession();
+  const router = useRouter();
 
+  const formikConfig: FormikConfig<LoginType> = {
+    initialValues: {
+      email: "",
+      password: "",
+    },
+    onSubmit: async (values) => {
+      try {
+        const res = await signIn("credentials", {
+          email: values.email,
+          password: values.password,
+          redirect: false,
+        });
+        console.log(res);
+        if (!res?.ok) {
+          throw new Error(res?.error as string);
+        }
+        if (res.error) {
+          throw new Error(res.error as string);
+        }
+        // router.push("/");
+      } catch (error: any) {
+        setErrorServer(error.message);
+      }
+    },
+    validationSchema: yup.object({
+      email: yup.string().trim().required().email(),
+      password: yup.string().trim().required().min(6),
+    }),
+  };
+
+  const formik = useFormik<{ email: string; password: string }>(formikConfig);
+  console.log(session);
   return (
     <div className="flex flex-col gap-4">
       <div>
@@ -20,7 +60,10 @@ function Login() {
         </div>
         <span>How would you like to sign in?</span>
       </div>
-      <form className="flex flex-col gap-3 rounded-md">
+      <form
+        onSubmit={formik.handleSubmit}
+        className="flex flex-col gap-3 rounded-md"
+      >
         <div className="flex flex-col gap-4 items-center">
           <div className="border-[1px] w-full py-3 rounded-full px-4 flex items-center gap-5">
             <img
@@ -38,9 +81,9 @@ function Login() {
         </div>
         <div className="flex flex-col gap-2">
           {errorServer ? (
-            <div className="bg-red-100 flex justify-between text-sm p-4 rounded-lg text-red-500">
-              <span>Email or password wrong</span>
-              <span>
+            <div className="bg-red-100 flex justify-between text-sm px-4 py-3 rounded-lg text-red-500">
+              <span>{errorServer}</span>
+              <span onClick={() => setErrorServer("")}>
                 <XIcon className="w-4 cursor-pointer" />
               </span>
             </div>
@@ -50,11 +93,20 @@ function Login() {
             <Input
               placeholder="Email"
               id="email"
+              name="email"
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
+              value={formik.values.email}
               className={cn({
-                "!ring-destructive border-destructive": true,
+                "!ring-destructive border-destructive":
+                  formik.errors.email && formik.touched.email,
               })}
             />
-            <span className="text-sm text-destructive">email salah</span>
+            {formik.errors.email && formik.touched.email && (
+              <span className="text-sm text-destructive">
+                {formik.errors.email}
+              </span>
+            )}
           </div>
           <div className="flex flex-col gap-1">
             <div className="flex justify-between">
@@ -66,8 +118,13 @@ function Login() {
                 type={togglePassword ? "password" : "text"}
                 placeholder="Password"
                 id="password"
+                name="password"
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+                value={formik.values.password}
                 className={cn("pr-10", {
-                  "!ring-destructive border-destructive": true,
+                  "!ring-destructive border-destructive":
+                    formik.errors.password && formik.touched.password,
                 })}
                 autoComplete="off"
               />
@@ -83,14 +140,23 @@ function Login() {
                 />
               )}
             </div>
-            <span className="text-sm text-destructive">email salah</span>
+            {formik.errors.password && formik.touched.password && (
+              <span className="text-sm text-destructive">
+                {formik.errors.password}
+              </span>
+            )}
           </div>
         </div>
-        <Button>Login</Button>
+        <Button type="submit" disabled={formik.isSubmitting}>
+          Login
+        </Button>
       </form>
       <div>
         <p className="mt-2 text-sm">
-          Don't have account? <span className="text-blue-500">Register</span>
+          Don't have account?{" "}
+          <Link href="/register" className="text-blue-500">
+            Register
+          </Link>
         </p>
       </div>
     </div>

@@ -21,9 +21,10 @@ model Profile {
 
 model User {
   id         String      @db.VarChar(255) @unique
-  username   String      @unique
-  password   String      @db.VarChar(255)
+  email      String      @unique
+  password   String?     @db.VarChar(255)
   name       String      @db.VarChar(255)
+  provider   String      @db.VarChar(32)
   token      String?     @db.LongText()
   profile    Profile?
 }
