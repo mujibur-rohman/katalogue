@@ -22,7 +22,6 @@ export const authOptions: AuthOptions = {
           }
           return null;
         } catch (error: any) {
-          console.log("ERROR WOYY");
           throw new Error(error.message);
         }
       },

@@ -31,7 +31,6 @@ function Login() {
           password: values.password,
           redirect: false,
         });
-        console.log(res);
         if (!res?.ok) {
           throw new Error(res?.error as string);
         }
@@ -50,7 +49,6 @@ function Login() {
   };
 
   const formik = useFormik<{ email: string; password: string }>(formikConfig);
-  console.log(session);
   return (
     <div className="flex flex-col gap-4">
       <div>
