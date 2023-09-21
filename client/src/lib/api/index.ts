@@ -1,5 +1,5 @@
 import axios from "axios";
 
 export const fetcher = axios.create({
-  baseURL: process.env.API_BASEURL,
+  baseURL: process.env.NEXT_PUBLIC_API_BASEURL,
 });

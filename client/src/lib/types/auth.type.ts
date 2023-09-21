@@ -16,3 +16,19 @@ export type ResponseLogin = {
   };
   message: string;
 };
+
+export type RegisterType = {
+  name: string;
+  email: string;
+  password: string;
+  confirmPassword: string;
+};
+
+export type ResponseRegister = {
+  data: {
+    id: string;
+    email: string;
+    name: string;
+    provider: string;
+  };
+};
