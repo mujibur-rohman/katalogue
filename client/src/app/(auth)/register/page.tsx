@@ -4,11 +4,13 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
 import authApi from "@/lib/api/auth.api";
+import { useToast } from "@/lib/hooks/use-toast";
 import { RegisterType } from "@/lib/types/auth.type";
 import { cn } from "@/lib/utils";
 import { FormikConfig, useFormik } from "formik";
 import { EyeIcon, EyeOffIcon, XIcon } from "lucide-react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 import * as yup from "yup";
 
@@ -16,6 +18,8 @@ function Register() {
   const [togglePassword, setTogglePassword] = useState(true);
   const [togglePasswordConf, setTogglePasswordConf] = useState(true);
   const [errorServer, setErrorServer] = useState("");
+  const router = useRouter();
+  const { toast } = useToast();
 
   const formikConfig: FormikConfig<RegisterType> = {
     initialValues: {
@@ -27,13 +31,23 @@ function Register() {
     onSubmit: async (values) => {
       const { confirmPassword, ...payload } = values;
       try {
-        const response = await authApi.register({
+        await authApi.register({
           ...payload,
           provider: "credential",
         });
-        console.log(response);
+        toast({
+          variant: "default",
+          title: "Registered Successfully",
+          description: "Please login",
+          duration: 2000,
+        });
+        router.push("/login");
       } catch (error: any) {
-        console.log(error);
+        toast({
+          variant: "destructive",
+          description: error.message,
+          duration: 2000,
+        });
         setErrorServer(error.message);
       }
     },
