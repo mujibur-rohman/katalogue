@@ -2,7 +2,6 @@
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Separator } from "@/components/ui/separator";
 import authApi from "@/lib/api/auth.api";
 import { useToast } from "@/lib/hooks/use-toast";
 import { RegisterType } from "@/lib/types/auth.type";
@@ -77,7 +76,7 @@ function Register() {
         onSubmit={formik.handleSubmit}
         className="flex flex-col gap-3 rounded-md"
       >
-        <div className="flex flex-col gap-4 items-center">
+        {/* <div className="flex flex-col gap-4 items-center">
           <div className="border-[1px] w-full py-3 rounded-full px-4 flex items-center gap-5">
             <img
               src="assets/images/google-logo.png"
@@ -86,12 +85,12 @@ function Register() {
             />
             <span>Sign Up with Google</span>
           </div>
-        </div>
-        <div className="text-foreground/40 text-xs flex items-center my-2">
+        </div> */}
+        {/* <div className="text-foreground/40 text-xs flex items-center my-2">
           <Separator className="w-10 grow" />
           <span className="px-2">or sign up with Email and Password</span>
           <Separator className="w-10 grow" />
-        </div>
+        </div> */}
         <div className="flex flex-col gap-2">
           {errorServer ? (
             <div className="bg-red-100 flex justify-between text-sm px-4 py-3 rounded-lg text-red-500">

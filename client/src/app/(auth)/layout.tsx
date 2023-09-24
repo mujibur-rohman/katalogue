@@ -1,3 +1,10 @@
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Login",
+  description: "Catalogue",
+};
+
 function AuthLayout({ children }: { children: React.ReactNode }) {
   return (
     <div className="min-h-screen flex justify-center items-center overflow-x-hidden">
