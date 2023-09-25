@@ -15,5 +15,6 @@ ProfileRouter.put(
   fileSizeLimiter,
   profileController.changeProfile
 );
+ProfileRouter.get("/:userId", profileController.getProfile);
 
 export default ProfileRouter;

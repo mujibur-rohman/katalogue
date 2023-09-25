@@ -32,13 +32,20 @@ export const authOptions: AuthOptions = {
     signIn: "/login",
     error: "/login",
   },
+  jwt: {
+    maxAge: 60 * 60 * 24,
+  },
+  session: {
+    strategy: "jwt",
+    maxAge: 60 * 60 * 24,
+  },
   callbacks: {
     async jwt({ token, account, user }) {
       if (account) {
-        console.log("AKUN", account);
-        console.log("USER", user);
-        token.accessToken = account.access_token;
+        token.token = user.token;
+        token.id = user.id;
         token.provider = account.provider;
+        token.profilePicture = user.profilePicture;
       }
 
       return { ...token };

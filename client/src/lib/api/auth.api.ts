@@ -22,7 +22,10 @@ const authApi = {
     provider: "credential";
   }) => {
     try {
-      const res = await fetcher.post(`${authEndPoint}/register`, payload);
+      const res = await fetcher.post<ResponseRegister>(
+        `${authEndPoint}/register`,
+        payload
+      );
       return res.data;
     } catch (error: any) {
       if (error.response.data) {

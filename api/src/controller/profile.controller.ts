@@ -77,4 +77,40 @@ const changeProfile = async (
   }
 };
 
-export default { changeProfile };
+const getProfile = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const { userId } = req.params;
+    const availableUser = await db.user.findUnique({
+      where: {
+        id: userId,
+      },
+    });
+    const availableProfile = await db.profile.findUnique({
+      where: {
+        userId,
+      },
+      select: {
+        userId: true,
+        bio: true,
+        photoFilename: true,
+        profilePicture: true,
+        user: {
+          select: {
+            email: true,
+            name: true,
+          },
+        },
+      },
+    });
+
+    if (!availableProfile || !availableUser) {
+      throw new ResponseError(400, "user not found");
+    }
+
+    res.status(200).json(availableProfile);
+  } catch (error) {
+    next(error);
+  }
+};
+
+export default { changeProfile, getProfile };
