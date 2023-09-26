@@ -34,5 +34,27 @@ model Catalogue {
   name          String      @unique
   description   String?     @db.LongText()
   url           String      @db.VarChar(255)
-  photoUrl      String?     @db.VarChar(255)
+  thumbnail     String?     @db.VarChar(255)
+  visitCount    Int?        @default(0)
 }
+
+model Product {
+   id           Int         @id @default(autoincrement())
+   name         String      @db.VarChar(255)
+   description  String      @db.LongText()
+   price        String      @db.VarChar(64)
+   photos       Photo[]
+}
+
+model Photo {
+  id           Int         @id @default(autoincrement())
+  productId    Int      
+  product      Product     @relation(fields: [productId], references: [id])
+  fileName     String      @db.VarChar(255)
+  url          String      @db.VarChar(512)    
+}
+
+model Type {
+  id           Int         @id @default(autoincrement())
+  name         String      @db.VarChar(64)
+} 
