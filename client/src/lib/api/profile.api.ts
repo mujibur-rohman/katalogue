@@ -12,7 +12,7 @@ const profileApi = {
     userId: string;
   }) => {
     try {
-      const res = await fetcher.put(profileEndpoint + "/" + userId, payload);
+      const res = await fetcher.put(profileEndpoint + "/a" + userId, payload);
       return res.data;
     } catch (error: any) {
       console.log(error);

@@ -31,11 +31,12 @@ model User {
 
 model Catalogue {
   id            String      @db.VarChar(255) @unique
-  name          String      @unique
+  name          String      @db.VarChar(255)
   description   String?     @db.LongText()
   url           String      @db.VarChar(255)
   thumbnail     String?     @db.VarChar(255)
   visitCount    Int?        @default(0)
+  products      Product[]
 }
 
 model Product {
@@ -44,6 +45,8 @@ model Product {
    description  String      @db.LongText()
    price        String      @db.VarChar(64)
    photos       Photo[]
+   catalogueId  String
+   catalogue    Catalogue   @relation(fields: [catalogueId], references: [id])
 }
 
 model Photo {
@@ -54,7 +57,25 @@ model Photo {
   url          String      @db.VarChar(512)    
 }
 
-model Type {
+model Attribute {
   id           Int         @id @default(autoincrement())
   name         String      @db.VarChar(64)
+  item         AttributeItem[]
+}
+
+model AttributeRelation {
+  id           Int         @id @default(autoincrement())
+  productId    Int
+  attributeId  Int
+}
+ 
+model AttributeItem {
+  id           Int         @id @default(autoincrement())
+  name         String      @db.VarChar(64)
+  attributeId  Int         
+  attribute    Attribute   @relation(fields: [attributeId], references: [id])    
 } 
+
+// model RelationAttribute {
+
+// }

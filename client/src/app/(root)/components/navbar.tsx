@@ -10,6 +10,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { LogOutIcon, UserIcon } from "lucide-react";
 import { signOut } from "next-auth/react";
+import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 
@@ -18,10 +19,13 @@ function Navbar() {
   return (
     <nav className="bg-background flex justify-between px-3 md:px-12 py-5">
       <Link href="/">
-        <img
+        <Image
           src="/assets/images/logo.png"
           alt="logo"
-          className="w-[8rem] h-auto"
+          width={124}
+          height={10}
+          priority
+          style={{ height: "auto", width: "auto" }}
         />
       </Link>
 

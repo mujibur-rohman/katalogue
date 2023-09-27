@@ -1,4 +1,5 @@
 import { Metadata } from "next";
+import Image from "next/image";
 
 export const metadata: Metadata = {
   title: "Login",
@@ -11,10 +12,13 @@ function AuthLayout({ children }: { children: React.ReactNode }) {
       <div className="flex flex-col gap-5 w-[90vw] md:w-[55vw] lg:w-[34vw]">
         <div className="border-divider rounded-lg p-5">{children}</div>
         <div className="flex flex-col gap-4 items-center">
-          <img
-            src="assets/images/logo.png"
+          <Image
+            src="/assets/images/logo.png"
             alt="logo"
-            className="w-[12rem] h-auto"
+            width={250}
+            height={10}
+            priority
+            style={{ height: "auto", width: "auto" }}
           />
         </div>
       </div>

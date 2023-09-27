@@ -15,7 +15,7 @@ function Login() {
       <LoginForm />
       <div>
         <p className="mt-2 text-sm">
-          Don't have account?{" "}
+          Don&apos;t have account?{" "}
           <Link href="/register" className="text-blue-500">
             Register
           </Link>
