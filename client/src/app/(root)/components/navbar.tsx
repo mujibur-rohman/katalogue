@@ -17,7 +17,7 @@ import { useRouter } from "next/navigation";
 function Navbar() {
   const router = useRouter();
   return (
-    <nav className="bg-background flex justify-between px-3 md:px-12 py-5">
+    <nav className="bg-background flex items-center justify-between px-3 md:px-12 py-5">
       <Link href="/">
         <Image
           src="/assets/images/logo.png"

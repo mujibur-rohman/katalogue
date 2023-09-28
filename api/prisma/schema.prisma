@@ -76,6 +76,9 @@ model AttributeItem {
   attribute    Attribute   @relation(fields: [attributeId], references: [id])    
 } 
 
-// model RelationAttribute {
-
-// }
+model AttributeItemRelation {
+  id           Int         @id @default(autoincrement())
+  productId    Int
+  attributeId  Int
+}
+ 

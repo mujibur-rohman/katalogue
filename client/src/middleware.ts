@@ -6,6 +6,9 @@ export default async function middleware(req: NextRequestWithAuth) {
   const auth = await getToken({ req });
   const authenticated = !!auth;
 
+  /**
+    blocking auth if user has logged
+  */
   if (
     req.nextUrl.pathname === "/login" ||
     req.nextUrl.pathname === "/register"
@@ -15,8 +18,17 @@ export default async function middleware(req: NextRequestWithAuth) {
     }
     return;
   }
+
+  /**
+    blocking base route if user not loggin
+  */
+
   if (!authenticated) {
     return NextResponse.redirect(new URL("/login", req.url));
+  }
+
+  if (req.nextUrl.pathname === "/") {
+    return NextResponse.redirect(new URL("/catalogue", req.url));
   }
 }
 

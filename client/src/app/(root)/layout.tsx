@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import Navbar from "./components/navbar";
+import SubNavbar from "./components/sub-navbar";
+import React from "react";
 
 export const metadata: Metadata = {
   title: "Katalogue",
@@ -12,9 +14,10 @@ export default function ContentLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div>
+    <React.Fragment>
       <Navbar />
+      <SubNavbar />
       {children}
-    </div>
+    </React.Fragment>
   );
 }
