@@ -4,18 +4,45 @@ import { revalidatePath } from "next/cache";
 
 const attributeEndpoint = "/attributes";
 
-type PaginationResponse = {
+export type PaginationResponse = {
   limit: number;
   page: number;
   totalRows: number;
   data: { id: number; name: string }[];
 };
 
+export type TypeAttribute = {
+  id: number;
+  name: string;
+};
+
 export async function getAllAttributes() {
   try {
-    const attributes = await fetcher.get<PaginationResponse>(attributeEndpoint);
+    await new Promise((res) => setTimeout(res, 4000));
+    const attributes = await fetcher.get<PaginationResponse>(
+      attributeEndpoint,
+      {
+        params: {
+          limit: 20,
+        },
+      }
+    );
     return attributes.data;
   } catch (error: any) {
+    if (error.response?.data) {
+      throw new Error(error.response.data.errors);
+    }
+    throw new Error(error.message);
+  }
+}
+
+export async function deleteAttribute(id: number) {
+  try {
+    const attributes = await fetcher.delete(attributeEndpoint + "/" + id);
+    revalidatePath("/attributes");
+    return attributes.data;
+  } catch (error: any) {
+    console.log(error.message);
     if (error.response?.data) {
       throw new Error(error.response.data.errors);
     }
@@ -30,8 +57,8 @@ export async function addAttribute(payload: { name: string }) {
     return attributes.data;
   } catch (error: any) {
     if (error.response?.data.errors) {
-      throw error.response.data.errors;
+      throw new Error(error.response.data.errors);
     }
-    throw error.message;
+    throw new Error(error.message);
   }
 }

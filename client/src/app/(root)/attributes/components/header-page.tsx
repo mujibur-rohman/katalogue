@@ -33,7 +33,7 @@ function HeaderPage({}: Props) {
       toast({
         variant: "destructive",
         title: "Add Failed",
-        description: error,
+        description: error.message,
         duration: 2000,
       });
     } finally {
@@ -46,7 +46,10 @@ function HeaderPage({}: Props) {
       <Modal
         title="New Attributes"
         isOpen={openModal}
-        onClose={() => setOpenModal(false)}
+        onClose={() => {
+          setNameValue("");
+          setOpenModal(false);
+        }}
       >
         <form onSubmit={handleSubmit} className="flex flex-col gap-3">
           <Input

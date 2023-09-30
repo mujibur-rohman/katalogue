@@ -19,7 +19,7 @@ const errorMiddleware = async (
       })
       .end();
   } else {
-    res.status(500).json({ errors: err.message }).end();
+    res.status(500).json({ errors: "Internal Server Error" }).end();
   }
 };
 
