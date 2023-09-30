@@ -39,7 +39,7 @@ function Navbar() {
         <DropdownMenuContent className="translate-x-[-25%]">
           <DropdownMenuLabel>My Account</DropdownMenuLabel>
           <DropdownMenuSeparator />
-          <DropdownMenuItem
+          <DropdownMenuItem  
             className="flex gap-2"
             onClick={() => {
               router.push("/profile");

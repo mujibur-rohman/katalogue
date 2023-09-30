@@ -1,6 +1,6 @@
 "use server";
-
 import { fetcher } from "@/lib/api";
+import { revalidatePath } from "next/cache";
 
 const attributeEndpoint = "/attributes";
 
@@ -20,5 +20,18 @@ export async function getAllAttributes() {
       throw new Error(error.response.data.errors);
     }
     throw new Error(error.message);
+  }
+}
+
+export async function addAttribute(payload: { name: string }) {
+  try {
+    const attributes = await fetcher.post(attributeEndpoint, payload);
+    revalidatePath("/attributes");
+    return attributes.data;
+  } catch (error: any) {
+    if (error.response?.data.errors) {
+      throw error.response.data.errors;
+    }
+    throw error.message;
   }
 }

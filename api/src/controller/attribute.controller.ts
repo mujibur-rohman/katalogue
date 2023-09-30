@@ -70,6 +70,12 @@ const getAll = async (req: Request, res: Response, next: NextFunction) => {
           contains: query as string,
         },
       },
+      orderBy: {
+        name: "asc",
+      },
+      include: {
+        item: true,
+      },
     });
     res.status(200).json({
       limit: parseInt(limit as string),
@@ -82,17 +88,48 @@ const getAll = async (req: Request, res: Response, next: NextFunction) => {
   }
 };
 
+const getOne = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const availableAttr = await db.attribute.findFirst({
+      where: {
+        id: parseInt(req.params.id),
+      },
+      include: {
+        item: true,
+      },
+    });
+
+    if (!availableAttr) {
+      throw new ResponseError(404, "attribute not found");
+    }
+
+    res.status(200).json(availableAttr);
+  } catch (error) {
+    next(error);
+  }
+};
+
 const deleteAttribute = async (
   req: Request,
   res: Response,
   next: NextFunction
 ) => {
   try {
-    await db.attribute.delete({
+    const availableAttr = await db.attribute.findFirst({
       where: {
         id: parseInt(req.params.id),
       },
     });
+
+    if (!availableAttr) {
+      throw new ResponseError(404, "attribute not found");
+    }
+    await db.attribute.delete({
+      where: {
+        id: availableAttr.id,
+      },
+    });
+
     res.status(200).json({
       message: "attribute deleted successfully",
     });
@@ -101,4 +138,10 @@ const deleteAttribute = async (
   }
 };
 
-export default { addAttribute, updateAttribute, getAll, deleteAttribute };
+export default {
+  addAttribute,
+  updateAttribute,
+  getAll,
+  deleteAttribute,
+  getOne,
+};
