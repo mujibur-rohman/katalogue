@@ -5,11 +5,13 @@ import { Input } from "@/components/ui/input";
 import { Modal } from "@/components/ui/modal";
 import { useToast } from "@/lib/hooks/use-toast";
 import { PlusIcon } from "lucide-react";
+import { useSession } from "next-auth/react";
 import React, { useState } from "react";
 
 type Props = {};
 
 function HeaderPage({}: Props) {
+  const session = useSession();
   const [openModal, setOpenModal] = useState(false);
   const [valueName, setNameValue] = useState("");
   const [loading, setLoading] = useState(false);
@@ -19,12 +21,9 @@ function HeaderPage({}: Props) {
     try {
       e.preventDefault();
       setLoading(true);
-      await addAttribute({ name: valueName });
-      toast({
-        variant: "success",
-        title: "Success",
-        description: "Attribute Added",
-        duration: 2000,
+      await addAttribute({
+        name: valueName,
+        userId: session.data?.user.id as string,
       });
       setLoading(false);
       setOpenModal(false);
@@ -64,7 +63,7 @@ function HeaderPage({}: Props) {
             disabled={!valueName || loading}
             className="self-end"
           >
-            Add
+            {loading ? "Loading" : "Add"}
           </Button>
         </form>
       </Modal>

@@ -10,7 +10,7 @@ type Props = {};
 function SubNavbar({}: Props) {
   const pathname = usePathname();
   return (
-    <div className="border-b-[1px] px-3 md:px-12 flex">
+    <div className="border-b-[1px] px-3 md:px-12 flex bg-background">
       {SUB_MENUS.map((menu) => (
         <div className="relative text-sm md:text-base" key={menu.path}>
           <Link

@@ -15,8 +15,10 @@ export default function ContentLayout({
 }) {
   return (
     <React.Fragment>
-      <Navbar />
-      <SubNavbar />
+      <div className="sticky top-0">
+        <Navbar />
+        <SubNavbar />
+      </div>
       {children}
     </React.Fragment>
   );
