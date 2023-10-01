@@ -47,6 +47,16 @@ const updateAttribute = async (
 
 const getAll = async (req: Request, res: Response, next: NextFunction) => {
   try {
+    const user = await db.user.findFirst({
+      where: {
+        id: req.query.userId?.toString(),
+      },
+    });
+
+    if (!user || !req.query.userId) {
+      throw new ResponseError(404, "user not found");
+    }
+
     const limit = req.query.limit || 10;
     const page = req.query.page || 1;
     const query = req.query.q || "";
@@ -59,6 +69,7 @@ const getAll = async (req: Request, res: Response, next: NextFunction) => {
         name: {
           contains: query as string,
         },
+        userId: user.id,
       },
     });
 
@@ -69,9 +80,10 @@ const getAll = async (req: Request, res: Response, next: NextFunction) => {
         name: {
           contains: query as string,
         },
+        userId: user.id,
       },
       orderBy: {
-        name: "asc",
+        id: "desc",
       },
       include: {
         item: true,

@@ -27,6 +27,7 @@ model User {
   provider   String      @db.VarChar(32)
   token      String?     @db.LongText()
   profile    Profile?
+  attributes Attribute[]
 }
 
 model Catalogue {
@@ -58,9 +59,11 @@ model Photo {
 }
 
 model Attribute {
-  id           Int         @id @default(autoincrement())
-  name         String      @db.VarChar(64)
+  id           Int              @id @default(autoincrement())
+  name         String           @db.VarChar(64)
   item         AttributeItem[]
+  userId       String           
+  User         User             @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
 }
 
 model AttributeRelation {
