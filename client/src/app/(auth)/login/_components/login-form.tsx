@@ -37,7 +37,7 @@ function LoginForm({}: Props) {
         if (res.error) {
           throw new Error(res.error as string);
         }
-        router.push("/");
+        router.push("/catalogue");
         router.refresh();
       } catch (error: any) {
         setErrorServer(error.message);
