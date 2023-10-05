@@ -9,12 +9,10 @@ import { PlusIcon } from "lucide-react";
 import { TypeAttribute, deleteAttribute } from "@/actions/attribute";
 import { useToast } from "@/lib/hooks/use-toast";
 import { AnimatePresence, motion } from "framer-motion";
+import BodyAttribute from "./body-attribute";
 
 type Props = {
-  attributes: {
-    id: number;
-    name: string;
-  }[];
+  attributes: TypeAttribute[];
 };
 
 function AttributeLists({ attributes }: Props) {
@@ -55,8 +53,9 @@ function AttributeLists({ attributes }: Props) {
               className="flex bg-background flex-col gap-3 p-3 border-[1px] rounded-lg min-h-[20rem]"
             >
               <HeaderAttribute attribute={att} handleDelete={handleDelete} />
-              <div className="p-2 cursor-pointer hover:bg-gray-100 transition-colors flex gap-2 rounded-md border-[1px] font-light">
-                <PlusIcon className="text-gray-400" />
+              <BodyAttribute item={att.item} />
+              <div className="p-2 cursor-pointer text-blue-500 bg-blue-500/10 hover:bg-blue-100 transition-colors flex gap-2 rounded-md font-light">
+                <PlusIcon className="text-blue-500" />
                 <span>Add New Attribute</span>
               </div>
             </motion.div>

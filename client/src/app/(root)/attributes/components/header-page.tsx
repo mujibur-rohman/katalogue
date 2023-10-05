@@ -20,14 +20,16 @@ function HeaderPage({}: Props) {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     try {
       e.preventDefault();
-      setLoading(true);
-      await addAttribute({
-        name: valueName,
-        userId: session.data?.user.id as string,
-      });
-      setLoading(false);
-      setOpenModal(false);
-      setNameValue("");
+      if (valueName.trim()) {
+        setLoading(true);
+        await addAttribute({
+          name: valueName,
+          userId: session.data?.user.id as string,
+        });
+        setLoading(false);
+        setOpenModal(false);
+        setNameValue("");
+      }
     } catch (error: any) {
       toast({
         variant: "destructive",
@@ -60,7 +62,7 @@ function HeaderPage({}: Props) {
           />
           <Button
             type="submit"
-            disabled={!valueName || loading}
+            disabled={!valueName || loading || !valueName.trim()}
             className="self-end"
           >
             {loading ? "Loading" : "Add"}

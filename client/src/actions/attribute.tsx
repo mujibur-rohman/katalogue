@@ -1,19 +1,22 @@
 "use server";
 import { fetcher } from "@/lib/api";
 import { revalidatePath } from "next/cache";
+import { TypeAttributeItem } from "./attribute-iitem";
 
 const attributeEndpoint = "/attributes";
 
-export type PaginationResponse = {
+type PaginationResponseAttribute = {
   limit: number;
   page: number;
   totalRows: number;
-  data: { id: number; name: string }[];
+  data: TypeAttribute[];
 };
 
 export type TypeAttribute = {
   id: number;
   name: string;
+  userId: string;
+  item: TypeAttributeItem[];
 };
 
 export async function getAllAttributes({
@@ -27,7 +30,7 @@ export async function getAllAttributes({
 }) {
   try {
     // await new Promise((res) => setTimeout(res, 4000));
-    const attributes = await fetcher.get<PaginationResponse>(
+    const attributes = await fetcher.get<PaginationResponseAttribute>(
       attributeEndpoint,
       {
         params: {

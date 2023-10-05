@@ -21,6 +21,7 @@ const getAll = async (req: Request, res: Response, next: NextFunction) => {
         name: {
           contains: query as string,
         },
+        attributeId: parseInt(req.query.attributeId as string),
       },
     });
 

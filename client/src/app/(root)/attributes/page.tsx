@@ -11,7 +11,6 @@ export default async function Attributes() {
   const attributes = await getAllAttributes({
     userId: session?.user.id as string,
   });
-  attributes.data;
   return (
     <React.Fragment>
       <div className="p-base pb-8">
