@@ -54,3 +54,33 @@ export async function getAllAttributeItem({
     throw new Error(error.message);
   }
 }
+
+export async function addAttributeItem(payload: {
+  name: string;
+  attributeId: number;
+}) {
+  try {
+    const attributes = await fetcher.post(attributeItemEndpoint, payload);
+    revalidatePath("/attributes");
+    return attributes.data;
+  } catch (error: any) {
+    if (error.response?.data.errors) {
+      throw new Error(error.response.data.errors);
+    }
+    throw new Error(error.message);
+  }
+}
+
+export async function deleteAttributeItem(id: number) {
+  try {
+    const attributes = await fetcher.delete(attributeItemEndpoint + "/" + id);
+    revalidatePath("/attributes");
+    return attributes.data;
+  } catch (error: any) {
+    console.log(error.message);
+    if (error.response?.data) {
+      throw new Error(error.response.data.errors);
+    }
+    throw new Error(error.message);
+  }
+}

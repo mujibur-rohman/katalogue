@@ -5,7 +5,6 @@ import React, {
   experimental_useOptimistic as useOptimistic,
 } from "react";
 import HeaderAttribute from "./header-attribute";
-import { PlusIcon } from "lucide-react";
 import { TypeAttribute, deleteAttribute } from "@/actions/attribute";
 import { useToast } from "@/lib/hooks/use-toast";
 import { AnimatePresence, motion } from "framer-motion";
@@ -53,11 +52,7 @@ function AttributeLists({ attributes }: Props) {
               className="flex bg-background flex-col gap-3 p-3 border-[1px] rounded-lg min-h-[20rem]"
             >
               <HeaderAttribute attribute={att} handleDelete={handleDelete} />
-              <BodyAttribute item={att.item} />
-              <div className="p-2 cursor-pointer text-blue-500 bg-blue-500/10 hover:bg-blue-100 transition-colors flex gap-2 rounded-md font-light">
-                <PlusIcon className="text-blue-500" />
-                <span>Add New Attribute</span>
-              </div>
+              <BodyAttribute item={att.item} attributeId={att.id} />
             </motion.div>
           ))}
         </AnimatePresence>
