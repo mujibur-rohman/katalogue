@@ -49,7 +49,7 @@ function AttributeLists({ attributes }: Props) {
               layout
               exit={{ scale: 0.8, opacity: 0 }}
               key={att.id}
-              className="flex bg-background flex-col gap-3 p-3 border-[1px] rounded-lg min-h-[20rem]"
+              className="flex bg-background flex-col self-start gap-3 p-3 border-[1px] rounded-lg"
             >
               <HeaderAttribute attribute={att} handleDelete={handleDelete} />
               <BodyAttribute item={att.item} attributeId={att.id} />

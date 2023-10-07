@@ -3,22 +3,18 @@ import {
   addAttributeItem,
   deleteAttributeItem,
 } from "@/actions/attribute-iitem";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
+
 import { useToast } from "@/lib/hooks/use-toast";
 import { cn } from "@/lib/utils";
-import { EditIcon, PlusIcon, TrashIcon } from "lucide-react";
+import { PlusIcon } from "lucide-react";
 import {
-  useEffect,
   useRef,
   useState,
   experimental_useOptimistic as useOptimistic,
+  useCallback,
 } from "react";
 import TextAttributeItem from "./text-attribute-item";
+import { AnimatePresence } from "framer-motion";
 
 type Props = {
   item: TypeAttributeItem[];
@@ -32,65 +28,40 @@ function BodyAttribute({ item, attributeId }: Props) {
   );
   const { toast } = useToast();
   const [showAdd, setShowAdd] = useState(false);
-  const [readOnly, setReadOnly] = useState(true);
   const [addValue, setAddValue] = useState("");
   const [addLoading, setAddLoading] = useState(false);
   const refAdd = useRef<HTMLInputElement | null>(null);
 
-  const handleDelete = async (id: number) => {
-    try {
-      const newAttr = item.filter((attr) => attr.id !== id);
-      addOptimisticAttr(newAttr);
-      await deleteAttributeItem(id);
-    } catch (error: any) {
-      addOptimisticAttr(item);
-      toast({
-        variant: "destructive",
-        title: "Delete Failed",
-        description: error.message,
-        duration: 3000,
-      });
-    }
-  };
+  const handleDelete = useCallback(
+    async (id: number) => {
+      try {
+        const newAttr = item.filter((attr) => attr.id !== id);
+        addOptimisticAttr(newAttr);
+        await deleteAttributeItem(id);
+      } catch (error: any) {
+        addOptimisticAttr(item);
+        toast({
+          variant: "destructive",
+          title: "Delete Failed",
+          description: error.message,
+          duration: 3000,
+        });
+      }
+    },
+    [optimisticAttr]
+  );
   return (
-    <div className="h-full border-t-[1px] flex flex-col gap-2 border-b-[1px] pt-2">
-      {optimisticAttr.map((i) => (
-        <span
-          className="group flex gap-3 justify-between items-center hover:bg-gray-50 transition-colors p-2 border-[1px] rounded"
-          key={i.id}
-        >
-          <TextAttributeItem readOnly={readOnly} attrName={i.name} />
-          <TooltipProvider>
-            <div className="flex gap-2">
-              <Tooltip>
-                <TooltipTrigger>
-                  <TrashIcon
-                    onClick={() => {
-                      handleDelete(i.id);
-                    }}
-                    className="w-4 transition-opacity group-hover:opacity-100 opacity-0 text-destructive"
-                    strokeWidth="1.25"
-                  />
-                </TooltipTrigger>
-                <TooltipContent>
-                  <p>Delete</p>
-                </TooltipContent>
-              </Tooltip>
-              <Tooltip>
-                <TooltipTrigger>
-                  <EditIcon
-                    className="w-4 transition-opacity group-hover:opacity-100 opacity-0 text-blue-500"
-                    strokeWidth="1.25"
-                  />
-                </TooltipTrigger>
-                <TooltipContent>
-                  <p>Edit</p>
-                </TooltipContent>
-              </Tooltip>
-            </div>
-          </TooltipProvider>
-        </span>
-      ))}
+    <div className="h-full border-t-[1px] flex flex-col gap-2 pt-2">
+      <AnimatePresence mode="popLayout">
+        {optimisticAttr.map((i) => (
+          <TextAttributeItem
+            key={i.id}
+            handleDelete={handleDelete}
+            id={i.id}
+            attrName={i.name}
+          />
+        ))}
+      </AnimatePresence>
       <form
         onSubmit={async (e) => {
           try {
@@ -115,8 +86,8 @@ function BodyAttribute({ item, attributeId }: Props) {
             setAddLoading(false);
           }
         }}
-        className={cn("flex gap-2 mb-2", {
-          "opacity-100 h-fit": showAdd,
+        className={cn("flex gap-2", {
+          "opacity-100 h-fit py-2": showAdd,
           "opacity-0 h-0": !showAdd,
         })}
       >
@@ -129,14 +100,30 @@ function BodyAttribute({ item, attributeId }: Props) {
           className="outline-none grow border-b-[1px]"
           type="text"
         />
-        <button
-          type="submit"
-          disabled={addLoading}
-          className="bg-blue-500 disabled:bg-blue-200 disabled:cursor-default text-white px-3 py-1 rounded hover:bg-blue-600 transition-colors"
-        >
-          Save
-        </button>
+        <div className="flex gap-2">
+          <button
+            type="submit"
+            disabled={addLoading}
+            className="bg-blue-500 text-xs disabled:bg-blue-200 disabled:cursor-default text-white px-3 py-1 rounded hover:bg-blue-600 transition-colors"
+          >
+            Save
+          </button>
+          <button
+            type="button"
+            onClick={() => {
+              setShowAdd(false);
+            }}
+            className="bg-secondary text-xs disabled:cursor-default text-foreground px-2 py-1 rounded hover:bg-secondary transition-colors"
+          >
+            Cancel
+          </button>
+        </div>
       </form>
+      {optimisticAttr.length ? (
+        <hr />
+      ) : (
+        <span className="block text-center mb-3">Data Empty</span>
+      )}
       <div
         onClick={() => {
           setShowAdd(true);

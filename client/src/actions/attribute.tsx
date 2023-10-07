@@ -29,7 +29,6 @@ export async function getAllAttributes({
   userId: string;
 }) {
   try {
-    // await new Promise((res) => setTimeout(res, 4000));
     const attributes = await fetcher.get<PaginationResponseAttribute>(
       attributeEndpoint,
       {

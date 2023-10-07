@@ -84,3 +84,22 @@ export async function deleteAttributeItem(id: number) {
     throw new Error(error.message);
   }
 }
+
+export async function updateAttributeItem(
+  payload: { name: string },
+  attrId: number
+) {
+  try {
+    const attributes = await fetcher.put(
+      `${attributeItemEndpoint}/${attrId}`,
+      payload
+    );
+    revalidatePath("/attributes");
+    return attributes.data;
+  } catch (error: any) {
+    if (error.response?.data.errors) {
+      throw new Error(error.response.data.errors);
+    }
+    throw new Error(error.message);
+  }
+}
