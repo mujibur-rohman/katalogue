@@ -28,6 +28,7 @@ model User {
   token      String?     @db.LongText()
   profile    Profile?
   attributes Attribute[]
+  catalogues Catalogue[]
 }
 
 model Catalogue {
@@ -35,9 +36,10 @@ model Catalogue {
   name          String      @db.VarChar(255)
   description   String?     @db.LongText()
   url           String      @db.VarChar(255)
-  thumbnail     String?     @db.VarChar(255)
   visitCount    Int?        @default(0)
   products      Product[]
+  userId        String           
+  User          User        @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
 }
 
 model Product {
@@ -84,4 +86,5 @@ model AttributeItemRelation {
   productId    Int
   attributeId  Int
 }
+
  
