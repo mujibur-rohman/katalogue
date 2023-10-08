@@ -1,18 +1,17 @@
 import { Router } from "express";
-import profileController from "../controller/profile.controller";
+import photoController from "../controller/photo.controller";
 import fileUpload from "express-fileupload";
 import fileExtLimiter from "../middleware/file-ext-limiter";
 import fileSizeLimiter from "../middleware/file-size-limiter";
 
-export const ProfileRouter: Router = Router();
+export const PhotoRouter: Router = Router();
 
-ProfileRouter.put(
-  "/:userId",
+PhotoRouter.post(
+  "/",
   fileUpload({ createParentPath: true }),
   fileExtLimiter([".png", ".jpg", ".jpeg"]),
   fileSizeLimiter,
-  profileController.changeProfile
+  photoController.create
 );
-ProfileRouter.get("/:userId", profileController.getProfile);
 
-export default ProfileRouter;
+export default PhotoRouter;

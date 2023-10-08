@@ -4,6 +4,7 @@ import ProfileRouter from "./profile.route";
 import AttributeRouter from "./attributes.route";
 import AttributeItemRouter from "./attribute-item.route";
 import CatalogueRouter from "./catalogue.route";
+import PhotoRouter from "./photo.route";
 
 const _routes: Array<[string, Router]> = [
   ["/auth", AuthRouter],
@@ -11,6 +12,7 @@ const _routes: Array<[string, Router]> = [
   ["/attributes", AttributeRouter],
   ["/attributes-item", AttributeItemRouter],
   ["/catalogues", CatalogueRouter],
+  ["/photo-product", PhotoRouter],
 ];
 
 const router: (app: Application) => void = (app: Application) => {
