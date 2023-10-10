@@ -70,4 +70,4 @@ const deletePhoto = async (req: Request, res: Response, next: NextFunction) => {
   }
 };
 
-export default { create };
+export default { create, deletePhoto };

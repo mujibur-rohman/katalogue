@@ -1,19 +1,17 @@
 import { Router } from "express";
-import photoController from "../controller/photo.controller";
 import fileUpload from "express-fileupload";
 import fileExtLimiter from "../middleware/file-ext-limiter";
 import fileSizeLimiter from "../middleware/file-size-limiter";
+import productController from "../controller/product.controller";
 
-export const PhotoRouter: Router = Router();
+export const ProductRouter: Router = Router();
 
-PhotoRouter.post(
+ProductRouter.post(
   "/",
   fileUpload({ createParentPath: true }),
   fileExtLimiter([".png", ".jpg", ".jpeg"]),
   fileSizeLimiter,
-  photoController.create
+  productController.addProduct
 );
 
-PhotoRouter.delete("/:photoId", photoController.deletePhoto);
-
-export default PhotoRouter;
+export default ProductRouter;
