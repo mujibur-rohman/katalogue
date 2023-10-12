@@ -50,7 +50,6 @@ model Product {
    price        String      @db.VarChar(64)
    photos       Photo[]
    thumbnail    Thumbnail[]
-   mainPhoto    String
    catalogueId  String
    catalogue    Catalogue   @relation(fields: [catalogueId], references: [id], onDelete: Cascade, onUpdate: Cascade)
 }
