@@ -49,14 +49,42 @@ model Product {
    description  String      @db.LongText()
    price        String      @db.VarChar(64)
    photos       Photo[]
-   thumbnail    Thumbnail[]
+   thumbnail    Thumbnail?
    catalogueId  String
+   attributes   AttributeRelation[]
    catalogue    Catalogue   @relation(fields: [catalogueId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+}
+
+model AttributeRelation {
+  id             Int         @id @default(autoincrement())
+  attributeId    Int
+  attribute      Attribute   @relation(fields: [attributeId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  productId      Int
+  product        Product?    @relation(fields: [productId], references: [id])
+  attributeItemId  Int
+  attributeItem    AttributeItemRelation[]
+}
+
+model Attribute {
+  id           Int              @id @default(autoincrement())
+  name         String           @db.VarChar(64)
+  item         AttributeItem[]
+  userId       String           
+  User         User             @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  attributeRelation AttributeRelation[]
+}
+
+model AttributeItemRelation {
+  id                       Int         @id @default(autoincrement())
+  attributeRelationId      Int
+  attributeRelation        AttributeRelation    @relation(fields: [attributeRelationId], references: [id])
+  attributeItemId          Int
+  attributeItem            AttributeItem     @relation(fields: [attributeItemId], references: [id])
 }
 
 model Thumbnail {
   id           Int         @id @default(autoincrement())
-  productId    Int?     
+  productId    Int?        @unique
   product      Product?    @relation(fields: [productId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   fileName     String      @db.VarChar(255)
   url          String      @db.VarChar(512)    
@@ -70,31 +98,10 @@ model Photo {
   url          String      @db.VarChar(512)    
 }
 
-model Attribute {
-  id           Int              @id @default(autoincrement())
-  name         String           @db.VarChar(64)
-  item         AttributeItem[]
-  userId       String           
-  User         User             @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-}
-
-model AttributeRelation {
-  id           Int         @id @default(autoincrement())
-  productId    Int
-  attributeId  Int
-}
- 
 model AttributeItem {
   id           Int         @id @default(autoincrement())
   name         String      @db.VarChar(64)
   attributeId  Int         
-  attribute    Attribute   @relation(fields: [attributeId], references: [id], onDelete: Cascade, onUpdate: Cascade)    
-} 
-
-model AttributeItemRelation {
-  id           Int         @id @default(autoincrement())
-  productId    Int
-  attributeId  Int
+  attribute    Attribute   @relation(fields: [attributeId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  attributeItemRel AttributeItemRelation[]
 }
-
- 
