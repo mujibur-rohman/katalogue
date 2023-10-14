@@ -6,6 +6,7 @@ import AttributeItemRouter from "./attribute-item.route";
 import CatalogueRouter from "./catalogue.route";
 import PhotoRouter from "./photo.route";
 import ProductRouter from "./product.route";
+import ThumbnailRouter from "./thumbnail.route";
 
 const _routes: Array<[string, Router]> = [
   ["/auth", AuthRouter],
@@ -15,6 +16,7 @@ const _routes: Array<[string, Router]> = [
   ["/catalogues", CatalogueRouter],
   ["/photo-product", PhotoRouter],
   ["/product", ProductRouter],
+  ["/thumbnail", ThumbnailRouter],
 ];
 
 const router: (app: Application) => void = (app: Application) => {
