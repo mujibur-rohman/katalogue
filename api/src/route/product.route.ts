@@ -14,6 +14,8 @@ ProductRouter.post(
   productController.addProduct
 );
 ProductRouter.get("/:productId", productController.getOne);
+ProductRouter.get("/", productController.getAll);
 ProductRouter.put("/:productId", productController.update);
+ProductRouter.delete("/:productId", productController.deleteProduct);
 
 export default ProductRouter;

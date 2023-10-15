@@ -369,4 +369,4 @@ const getOne = async (req: Request, res: Response, next: NextFunction) => {
   }
 };
 
-export default { addProduct, getOne, update, deleteProduct };
+export default { addProduct, getOne, update, deleteProduct, getAll };
