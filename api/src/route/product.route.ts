@@ -14,5 +14,6 @@ ProductRouter.post(
   productController.addProduct
 );
 ProductRouter.get("/:productId", productController.getOne);
+ProductRouter.put("/:productId", productController.update);
 
 export default ProductRouter;
