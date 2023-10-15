@@ -186,7 +186,46 @@ const update = async (req: Request, res: Response, next: NextFunction) => {
       }
     });
 
-    const updatedProduct = await db.product.update({
+    // *handle attributes
+
+    // hapus semua attribute dengan id produk
+    const allAttributesById = await db.attributeRelation.findMany({
+      where: {
+        productId: availableProduct.id,
+      },
+    });
+
+    if (allAttributesById.length) {
+      allAttributesById.forEach(async (attr) => {
+        await db.attributeRelation.delete({
+          where: {
+            id: attr.id,
+          },
+        });
+      });
+    }
+
+    productBody.attributes.forEach(
+      async (attribute: { attributeId: number; itemId: number[] }) => {
+        const attributeRel = await db.attributeRelation.create({
+          data: {
+            productId: availableProduct.id,
+            attributeId: attribute.attributeId,
+          },
+        });
+
+        attribute.itemId.forEach(async (item: number) => {
+          await db.attributeItemRelation.create({
+            data: {
+              attributeRelationId: attributeRel.id,
+              attributeItemId: item,
+            },
+          });
+        });
+      }
+    );
+
+    await db.product.update({
       where: {
         id: availableProduct.id,
       },
@@ -197,7 +236,91 @@ const update = async (req: Request, res: Response, next: NextFunction) => {
       },
     });
 
-    res.json("Success");
+    res.status(200).json({
+      message: "product updated successfully",
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+const deleteProduct = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const { productId } = req.params;
+
+    const availableProduct = await db.product.count({
+      where: {
+        id: parseInt(productId),
+      },
+    });
+    if (!availableProduct) {
+      throw new ResponseError(404, "product not found");
+    }
+
+    await db.product.delete({
+      where: {
+        id: parseInt(productId),
+      },
+    });
+
+    res.status(200).json({
+      message: "product deleted successfully",
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+const getAll = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const catalogue = await db.catalogue.findFirst({
+      where: {
+        id: req.query.catalogueId?.toString(),
+      },
+    });
+
+    if (!catalogue || !req.query.catalogueId) {
+      throw new ResponseError(404, "catalogue not found");
+    }
+    const limit = req.query.limit || 10;
+    const page = req.query.page || 1;
+    const query = req.query.q || "";
+    const offset =
+      parseInt(limit as string) * parseInt(page as string) -
+      parseInt(limit as string);
+
+    const totalRows = await db.product.count({
+      where: {
+        name: {
+          contains: query as string,
+        },
+        catalogueId: catalogue.id,
+      },
+    });
+
+    const product = await db.product.findMany({
+      skip: offset,
+      take: parseInt(limit as string),
+      where: {
+        name: {
+          contains: query as string,
+        },
+        catalogueId: catalogue.id,
+      },
+      orderBy: {
+        id: "desc",
+      },
+    });
+    res.status(200).json({
+      limit: parseInt(limit as string),
+      page: parseInt(page as string),
+      totalRows,
+      data: product,
+    });
   } catch (error) {
     next(error);
   }
@@ -246,4 +369,4 @@ const getOne = async (req: Request, res: Response, next: NextFunction) => {
   }
 };
 
-export default { addProduct, getOne, update };
+export default { addProduct, getOne, update, deleteProduct };
