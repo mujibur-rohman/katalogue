@@ -13,5 +13,6 @@ ProductRouter.post(
   fileSizeLimiter,
   productController.addProduct
 );
+ProductRouter.get("/:productId", productController.getOne);
 
 export default ProductRouter;
