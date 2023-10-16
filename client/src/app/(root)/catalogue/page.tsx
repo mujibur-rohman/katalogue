@@ -1,7 +1,11 @@
+import HeaderCatalogue from "./components/header-catalogue";
+import ListCatalogue from "./components/list-catalogue";
+
 export default function Catalogue() {
   return (
-    <div className="flex items-center flex-col pt-5 px-3 md:px-12 gap-5">
-      Catalogue
+    <div className="p-base pb-8">
+      <HeaderCatalogue />
+      <ListCatalogue />
     </div>
   );
 }
