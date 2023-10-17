@@ -5,6 +5,7 @@ export default function Catalogue() {
   return (
     <div className="p-base pb-8">
       <HeaderCatalogue />
+
       <ListCatalogue />
     </div>
   );

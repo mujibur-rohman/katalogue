@@ -48,7 +48,11 @@ const getAll = async (req: Request, res: Response, next: NextFunction) => {
         id: "desc",
       },
       include: {
-        products: true,
+        products: {
+          select: {
+            _count: true,
+          },
+        },
       },
     });
 
