@@ -15,13 +15,13 @@ function SubNavbar({}: Props) {
         <div className="relative text-sm md:text-base" key={menu.path}>
           <Link
             className={cn("block transition-all w-full h-full py-3 px-4", {
-              "font-medium": menu.path === pathname,
+              "font-medium": pathname.startsWith(menu.path),
             })}
             href={menu.path}
           >
             {menu.name}
           </Link>
-          {menu.path === pathname && (
+          {pathname.startsWith(menu.path) && (
             <motion.div
               layoutId="border-menu"
               className="absolute border-b-[1px] border-blue-400 left-0 right-0 bottom-0"

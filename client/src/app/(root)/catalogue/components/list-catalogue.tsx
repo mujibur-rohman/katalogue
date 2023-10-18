@@ -11,7 +11,6 @@ async function ListCatalogue({}: Props) {
   const catalogues = await getAllCatalogues({
     userId: session?.user.id as string,
   });
-  console.log(catalogues);
   return (
     <React.Fragment>
       <span className="mb-5 inline-block">
