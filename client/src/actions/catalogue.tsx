@@ -12,7 +12,7 @@ type PaginationResponseCatalogue = {
 export type TypeCatalogue = {
   id: string;
   name: string;
-  description: number;
+  description: string;
   url: string;
   slug: string;
   visitCount: number;
