@@ -90,6 +90,32 @@ const getOne = async (req: Request, res: Response, next: NextFunction) => {
   }
 };
 
+const checkSlug = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const { slug } = req.query;
+
+    if (!slug) {
+      throw new ResponseError(403, "slug required");
+    }
+
+    const availableSlug = await db.catalogue.count({
+      where: {
+        slug: {
+          equals: slug as string,
+        },
+      },
+    });
+
+    if (availableSlug) {
+      throw new ResponseError(405, "slug not available");
+    }
+
+    res.status(200).json({ message: "slug available" });
+  } catch (error) {
+    next(error);
+  }
+};
+
 const watch = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { catalogueId } = req.params;
@@ -212,4 +238,4 @@ const update = async (req: Request, res: Response, next: NextFunction) => {
   }
 };
 
-export default { create, update, getAll, getOne, watch };
+export default { create, update, getAll, getOne, watch, checkSlug };

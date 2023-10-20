@@ -7,5 +7,6 @@ CatalogueRouter.patch("/watch/:catalogueId", catalogueController.watch);
 CatalogueRouter.put("/:catalogueId", catalogueController.update);
 CatalogueRouter.get("/:catalogueId", catalogueController.getOne);
 CatalogueRouter.get("/", catalogueController.getAll);
+CatalogueRouter.post("/slug", catalogueController.checkSlug);
 
 export default CatalogueRouter;
