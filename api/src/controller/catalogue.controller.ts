@@ -129,6 +129,16 @@ const create = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const catalogue = validate(addCatalogueValidation, req.body);
 
+    const availableSlug = await db.catalogue.count({
+      where: {
+        slug: catalogue.slug,
+      },
+    });
+
+    if (availableSlug) {
+      throw new ResponseError(401, "slug already exist");
+    }
+
     const userAvailable = await db.user.findFirst({
       where: {
         id: catalogue.userId,
@@ -162,6 +172,16 @@ const update = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { catalogueId } = req.params;
     const catalogue = validate(updateCatalogueValidation, req.body);
+
+    const availableSlug = await db.catalogue.count({
+      where: {
+        slug: catalogue.slug,
+      },
+    });
+
+    if (availableSlug) {
+      throw new ResponseError(401, "slug already exist");
+    }
 
     const availableCatalogue = await db.catalogue.findFirst({
       where: {
