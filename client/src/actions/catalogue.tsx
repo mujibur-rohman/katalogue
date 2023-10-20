@@ -20,6 +20,26 @@ export type TypeCatalogue = {
   products: {}[]; // todo product type
 };
 
+export async function checkSlug(slug: string) {
+  try {
+    const result = await fetcher.post(
+      catalogueEndpoint + "/slug",
+      {},
+      {
+        params: {
+          slug,
+        },
+      }
+    );
+    return result.data;
+  } catch (error: any) {
+    if (error.response?.data) {
+      throw new Error(error.response.data.errors);
+    }
+    throw new Error(error.message);
+  }
+}
+
 export async function getAllCatalogues({
   page = 1,
   limit = 5,

@@ -1,5 +1,6 @@
 "use client";
 
+import { checkSlug } from "@/actions/catalogue";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -7,6 +8,7 @@ import useDebounce from "@/lib/hooks/use-debounce";
 import { cn } from "@/lib/utils";
 import { FormikConfig, useFormik } from "formik";
 import { Link } from "lucide-react";
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import * as yup from "yup";
 
@@ -14,6 +16,8 @@ type Props = {};
 
 function FormAdd({}: Props) {
   const [loadingSlug, setLoadingSlug] = useState(false);
+  const [slugError, setSlugError] = useState("");
+  const [slugSuccess, setSlugSuccess] = useState("");
 
   const catalogueConfig: FormikConfig<{
     name: string;
@@ -41,14 +45,28 @@ function FormAdd({}: Props) {
 
   const debouncedValue = useDebounce<string>(formik.values.slug, 500);
 
+  // * fetch slug available
+  const checkAvailableSlug = async (slug: string) => {
+    try {
+      const result = await checkSlug(slug);
+      setSlugSuccess(result.message);
+      setSlugError("");
+    } catch (error: any) {
+      console.log(error.message);
+      setSlugError(error.message);
+      setSlugSuccess("");
+    }
+  };
+
+  console.log(slugError);
+
   useEffect(() => {
-    // Do fetch here...
-    // Triggers when "debouncedValue" changes
+    //* Triggers when "debouncedValue" changes
+    checkAvailableSlug(debouncedValue);
   }, [debouncedValue]);
 
   return (
     <form onSubmit={formik.handleSubmit} className="flex flex-col gap-4">
-      {debouncedValue}
       <div>
         <label htmlFor="name" className="font-medium inline-block mb-1">
           Title
@@ -76,18 +94,29 @@ function FormAdd({}: Props) {
           </label>
           <Input
             id="slug"
-            placeholder="Slug"
+            placeholder="my-product"
             name="slug"
             value={formik.values.slug}
-            onChange={formik.handleChange}
+            onChange={(e) => {
+              const regex = /^[a-zA-Z0-9]*$/;
+              if (!regex.test(e.target.value)) return;
+              formik.setFieldValue("slug", e.target.value);
+            }}
             onBlur={formik.handleBlur}
             className={cn({
               "!ring-destructive border-destructive":
-                formik.errors.slug && formik.touched.slug,
+                formik.touched.slug && (formik.errors.slug || slugError),
+              "!ring-green-500 border-green-500":
+                formik.touched.slug && !formik.errors.slug && !slugError,
             })}
           />
-          {formik.touched.slug && formik.errors.slug && (
-            <span className="text-sm text-red-500">{formik.errors.slug}</span>
+          {formik.touched.slug && (formik.errors.slug || slugError) && (
+            <span className="text-sm text-red-500">
+              {formik.errors.slug || slugError}
+            </span>
+          )}
+          {formik.touched.slug && !formik.errors.slug && !slugError && (
+            <span className="text-sm text-green-500">{slugSuccess}</span>
           )}
         </div>
         <div className="overflow-hidden w-full">
@@ -98,8 +127,7 @@ function FormAdd({}: Props) {
                 <Link className="w-4 text-gray-500" />
               </div>
               <span className="text-gray-500 whitespace-nowrap overflow-hidden truncate">
-                https://google.com https://google.com https://google.com
-                https://google.comffddwsfwf
+                {`${process.env.NEXT_PUBLIC_SITE_URL}/${debouncedValue}`}
               </span>
             </div>
             {/* <div className="px-2 cursor-pointer">
