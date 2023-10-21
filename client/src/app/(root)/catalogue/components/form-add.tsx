@@ -118,7 +118,7 @@ function FormAdd({}: Props) {
             name="slug"
             value={formik.values.slug}
             onChange={(e) => {
-              const regex = /^[a-zA-Z0-9]*$/;
+              const regex = /^[a-zA-Z0-9^-]*$/;
               if (!regex.test(e.target.value)) return;
               formik.setFieldValue("slug", e.target.value);
               formik.setFieldValue(

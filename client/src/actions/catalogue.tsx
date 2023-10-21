@@ -4,7 +4,7 @@ import { revalidatePath } from "next/cache";
 
 const catalogueEndpoint = "/catalogues";
 
-type PaginationResponseCatalogue = {
+export type PaginationResponseCatalogue = {
   limit: number;
   page: number;
   totalRows: number;
@@ -37,6 +37,39 @@ export async function addCatalogue(payload: TypePayloadCatalogue) {
     return catalogue.data;
   } catch (error: any) {
     if (error.response?.data.errors) {
+      throw new Error(error.response.data.errors);
+    }
+    throw new Error(error.message);
+  }
+}
+
+export async function editCatalogue({
+  payload,
+  id,
+}: {
+  payload: TypePayloadCatalogue;
+  id: string;
+}) {
+  try {
+    const catalogue = await fetcher.put(catalogueEndpoint + "/" + id, payload);
+    revalidatePath("/catalogue");
+    return catalogue.data;
+  } catch (error: any) {
+    if (error.response?.data.errors) {
+      throw new Error(error.response.data.errors);
+    }
+    throw new Error(error.message);
+  }
+}
+
+export async function deleteCatalogue(id: string) {
+  try {
+    const catalogue = await fetcher.delete(catalogueEndpoint + "/" + id);
+    revalidatePath("/catalogue");
+    return catalogue.data;
+  } catch (error: any) {
+    console.log(error.message);
+    if (error.response?.data) {
       throw new Error(error.response.data.errors);
     }
     throw new Error(error.message);

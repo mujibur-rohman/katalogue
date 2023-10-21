@@ -19,7 +19,7 @@ async function EditCatalogue({ params: { catalogueId } }: Props) {
       <h1 className="inline-block mb-3 font-semibold text-lg">
         Edit Catalogue
       </h1>
-      <FormEdit />
+      <FormEdit catalogue={catalogue} />
     </div>
   );
 }

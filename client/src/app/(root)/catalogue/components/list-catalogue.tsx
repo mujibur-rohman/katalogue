@@ -1,16 +1,12 @@
-import { getAllCatalogues } from "@/actions/catalogue";
-import { authOptions } from "@/app/api/auth/[...nextauth]/route";
-import { getServerSession } from "next-auth";
+import { PaginationResponseCatalogue } from "@/actions/catalogue";
 import React from "react";
 import ItemCatalogue from "./item-catalogue";
 
-type Props = {};
+type Props = {
+  catalogues: PaginationResponseCatalogue;
+};
 
-async function ListCatalogue({}: Props) {
-  const session = await getServerSession(authOptions);
-  const catalogues = await getAllCatalogues({
-    userId: session?.user.id as string,
-  });
+async function ListCatalogue({ catalogues }: Props) {
   return (
     <React.Fragment>
       <span className="mb-5 inline-block">

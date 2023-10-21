@@ -7,10 +7,18 @@ const SUB_MENUS = [
     path: "/attributes",
     name: "Attributes",
   },
-  {
-    path: "/color",
-    name: "Color",
-  },
 ];
+const SUB_MENUS_CATALOGUE = (id: string) => {
+  return [
+    {
+      path: "/catalogue/" + id,
+      name: "Information",
+    },
+    {
+      path: "/catalogue/" + id + "/products",
+      name: "Product",
+    },
+  ];
+};
 
-export default SUB_MENUS;
+export default { SUB_MENUS, SUB_MENUS_CATALOGUE };

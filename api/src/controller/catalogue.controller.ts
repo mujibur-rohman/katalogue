@@ -90,6 +90,39 @@ const getOne = async (req: Request, res: Response, next: NextFunction) => {
   }
 };
 
+const deleteCatalogue = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const { catalogueId } = req.params;
+
+    const availableCatalogue = await db.catalogue.findFirst({
+      where: {
+        id: catalogueId,
+      },
+      include: {
+        products: true,
+      },
+    });
+
+    if (!availableCatalogue) {
+      throw new ResponseError(404, "catalogue not found");
+    }
+
+    await db.catalogue.delete({
+      where: {
+        id: availableCatalogue.id,
+      },
+    });
+
+    res.status(200).json(availableCatalogue);
+  } catch (error) {
+    next(error);
+  }
+};
+
 const checkSlug = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { slug } = req.query;
@@ -199,13 +232,13 @@ const update = async (req: Request, res: Response, next: NextFunction) => {
     const { catalogueId } = req.params;
     const catalogue = validate(updateCatalogueValidation, req.body);
 
-    const availableSlug = await db.catalogue.count({
+    const availableSlug = await db.catalogue.findFirst({
       where: {
         slug: catalogue.slug,
       },
     });
 
-    if (availableSlug) {
+    if (availableSlug && availableSlug.id !== catalogueId) {
       throw new ResponseError(401, "slug already exist");
     }
 
@@ -238,4 +271,12 @@ const update = async (req: Request, res: Response, next: NextFunction) => {
   }
 };
 
-export default { create, update, getAll, getOne, watch, checkSlug };
+export default {
+  create,
+  update,
+  getAll,
+  getOne,
+  watch,
+  checkSlug,
+  deleteCatalogue,
+};

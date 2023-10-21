@@ -1,9 +1,10 @@
 "use client";
 
 import {
+  TypeCatalogue,
   TypePayloadCatalogue,
-  addCatalogue,
   checkSlug,
+  editCatalogue,
 } from "@/actions/catalogue";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -13,27 +14,27 @@ import { useToast } from "@/lib/hooks/use-toast";
 import { cn } from "@/lib/utils";
 import { FormikConfig, useFormik } from "formik";
 import { Link } from "lucide-react";
-import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import * as yup from "yup";
 
-type Props = {};
+type Props = {
+  catalogue: TypeCatalogue;
+};
 
-function FormEdit({}: Props) {
+function FormEdit({ catalogue }: Props) {
   const [slugError, setSlugError] = useState("");
   const [slugSuccess, setSlugSuccess] = useState("");
   const { toast } = useToast();
-  const { data } = useSession();
   const router = useRouter();
 
   const catalogueConfig: FormikConfig<TypePayloadCatalogue> = {
     initialValues: {
-      name: "",
-      description: "",
-      slug: "",
-      url: "",
-      userId: "",
+      name: catalogue.name,
+      description: catalogue.description,
+      slug: catalogue.slug,
+      url: catalogue.url,
+      userId: catalogue.userId,
     },
     validationSchema: yup.object({
       name: yup.string().trim().required().max(64),
@@ -42,11 +43,11 @@ function FormEdit({}: Props) {
     }),
     onSubmit: async (values) => {
       try {
-        console.log(values);
+        await editCatalogue({ id: catalogue.id, payload: values });
         router.replace("/catalogue");
         toast({
           variant: "success",
-          description: "Catalogue added successfully",
+          description: "Catalogue edited",
           duration: 2000,
         });
       } catch (error: any) {
@@ -77,8 +78,13 @@ function FormEdit({}: Props) {
 
   useEffect(() => {
     //* Triggers when "debouncedValue" changes
-    if (debouncedValue) {
+    if (debouncedValue && catalogue.slug !== debouncedValue) {
       checkAvailableSlug(debouncedValue);
+    }
+
+    if (catalogue.slug === debouncedValue) {
+      setSlugError("");
+      setSlugSuccess("");
     }
   }, [debouncedValue]);
 
@@ -117,7 +123,7 @@ function FormEdit({}: Props) {
             name="slug"
             value={formik.values.slug}
             onChange={(e) => {
-              const regex = /^[a-zA-Z0-9]*$/;
+              const regex = /^[a-zA-Z0-9^-]*$/;
               if (!regex.test(e.target.value)) return;
               formik.setFieldValue("slug", e.target.value);
               formik.setFieldValue(
@@ -130,7 +136,10 @@ function FormEdit({}: Props) {
               "!ring-destructive border-destructive":
                 formik.touched.slug && (formik.errors.slug || slugError),
               "!ring-green-500 border-green-500":
-                formik.touched.slug && !formik.errors.slug && !slugError,
+                formik.touched.slug &&
+                !formik.errors.slug &&
+                !slugError &&
+                slugSuccess,
             })}
           />
           {formik.touched.slug && (formik.errors.slug || slugError) && (
@@ -138,9 +147,12 @@ function FormEdit({}: Props) {
               {formik.errors.slug || slugError}
             </span>
           )}
-          {formik.touched.slug && !formik.errors.slug && !slugError && (
-            <span className="text-sm text-green-500">{slugSuccess}</span>
-          )}
+          {formik.touched.slug &&
+            !formik.errors.slug &&
+            !slugError &&
+            slugSuccess && (
+              <span className="text-sm text-green-500">{slugSuccess}</span>
+            )}
         </div>
         <div className="overflow-hidden w-full">
           <label className="font-medium inline-block mb-1">Url</label>
@@ -174,7 +186,7 @@ function FormEdit({}: Props) {
       </div>
       <div className="inline-block self-end">
         <Button type="submit" variant="default" disabled={formik.isSubmitting}>
-          Publish Catalogue
+          Update Catalogue
         </Button>
       </div>
     </form>
