@@ -20,7 +20,7 @@ import * as yup from "yup";
 
 type Props = {};
 
-function FormAdd({}: Props) {
+function FormEdit({}: Props) {
   const [slugError, setSlugError] = useState("");
   const [slugSuccess, setSlugSuccess] = useState("");
   const { toast } = useToast();
@@ -43,7 +43,6 @@ function FormAdd({}: Props) {
     onSubmit: async (values) => {
       try {
         console.log(values);
-        await addCatalogue({ ...values, userId: data?.user.id as string });
         router.replace("/catalogue");
         toast({
           variant: "success",
@@ -182,4 +181,4 @@ function FormAdd({}: Props) {
   );
 }
 
-export default FormAdd;
+export default FormEdit;
