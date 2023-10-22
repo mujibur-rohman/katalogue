@@ -314,6 +314,16 @@ const getAll = async (req: Request, res: Response, next: NextFunction) => {
       orderBy: {
         id: "desc",
       },
+      include: {
+        thumbnail: true,
+        attributes: {
+          include: {
+            attribute: true,
+            item: true,
+          },
+        },
+        photos: true,
+      },
     });
     res.status(200).json({
       limit: parseInt(limit as string),

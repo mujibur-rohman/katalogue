@@ -7,13 +7,7 @@ export type PaginationResponseProduct = {
   limit: number;
   page: number;
   totalRows: number;
-  data: {
-    id: number;
-    name: string;
-    description: string;
-    price: string;
-    catalogueId: string;
-  }[];
+  data: TypeProduct[];
 };
 
 export type TypeProduct = {
@@ -59,7 +53,7 @@ export async function getAllProduct({
   catalogueId: string;
 }) {
   try {
-    const catalogues = await fetcher.get<PaginationResponseProduct>(
+    const product = await fetcher.get<PaginationResponseProduct>(
       productEndpoint,
       {
         params: {
@@ -69,8 +63,21 @@ export async function getAllProduct({
         },
       }
     );
-    return catalogues.data;
+    return product.data;
   } catch (error: any) {
+    if (error.response?.data) {
+      throw new Error(error.response.data.errors);
+    }
+    throw new Error(error.message);
+  }
+}
+
+export async function getOneProduct(id: string) {
+  try {
+    const product = await fetcher.get<TypeProduct>(productEndpoint + "/" + id);
+    return product.data;
+  } catch (error: any) {
+    console.log(error.response.status);
     if (error.response?.data) {
       throw new Error(error.response.data.errors);
     }

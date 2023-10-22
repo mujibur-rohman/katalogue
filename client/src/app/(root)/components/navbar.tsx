@@ -17,7 +17,7 @@ import { useRouter } from "next/navigation";
 function Navbar() {
   const router = useRouter();
   return (
-    <nav className="bg-background flex items-center justify-between px-3 md:px-12 py-5">
+    <nav className="bg-background z-10 flex items-center justify-between px-3 md:px-12 py-5">
       <Link href="/">
         <Image
           src="/assets/images/logo.png"
@@ -39,7 +39,7 @@ function Navbar() {
         <DropdownMenuContent className="translate-x-[-25%]">
           <DropdownMenuLabel>My Account</DropdownMenuLabel>
           <DropdownMenuSeparator />
-          <DropdownMenuItem  
+          <DropdownMenuItem
             className="flex gap-2"
             onClick={() => {
               router.push("/profile");

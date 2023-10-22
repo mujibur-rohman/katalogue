@@ -32,7 +32,6 @@ function ItemCatalogue({ catalogue }: Props) {
         duration: 2000,
       });
     } catch (error: any) {
-      console.log(error);
       toast({
         variant: "destructive",
         description: error.message,
@@ -109,7 +108,7 @@ function ItemCatalogue({ catalogue }: Props) {
               </TooltipContent>
             </Tooltip>
           </div>
-      </TooltipProvider>
+        </TooltipProvider>
       </div>
       <div className="border-t-[1px] py-2 px-4 flex justify-between items-center">
         <div className="flex items-end gap-2 text-gray-400">
