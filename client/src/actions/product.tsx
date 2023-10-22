@@ -25,8 +25,8 @@ export type TypeProduct = {
       attributeItem: {
         id: number;
         name: string;
-      }[];
-    };
+      };
+    }[];
   }[];
   catalogue: TypeCatalogue;
   photos: {

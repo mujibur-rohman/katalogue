@@ -1,7 +1,7 @@
 /* eslint-disable @next/next/no-img-element */
 "use client";
 
-import { useState } from "react";
+import React, { useState } from "react";
 import { wrap } from "popmotion";
 import { AnimatePresence, motion } from "framer-motion";
 
@@ -48,37 +48,47 @@ function ImageSlide({ photos }: Props) {
     },
   };
   return (
-    <div className="relative aspect-w-6 aspect-h-6 rounded-xl overflow-hidden">
-      <AnimatePresence initial={false} custom={direction}>
-        <motion.img
-          key={page}
-          src={photos[imageIndex].url}
-          alt="photo product"
-          className="absolute inset-0 object-cover object-center"
-          custom={direction}
-          variants={variants}
-          initial="enter"
-          animate="center"
-          exit="exit"
-          transition={{
-            x: { type: "spring", stiffness: 300, damping: 30 },
-            opacity: { duration: 0.2 },
-          }}
-          drag="x"
-          dragConstraints={{ left: 0, right: 0 }}
-          dragElastic={1}
-          onDragEnd={(e, { offset, velocity }) => {
-            const swipe = swipePower(offset.x, velocity.x);
+    <React.Fragment>
+      <div className="relative aspect-w-6 aspect-h-6 rounded-xl overflow-hidden">
+        <AnimatePresence initial={false} custom={direction}>
+          <motion.img
+            key={page}
+            src={photos[imageIndex].url}
+            alt="photo product"
+            className="object-cover object-center"
+            custom={direction}
+            variants={variants}
+            initial="enter"
+            animate="center"
+            exit="exit"
+            transition={{
+              x: { type: "spring", stiffness: 300, damping: 30 },
+              opacity: { duration: 0.2 },
+            }}
+            drag="x"
+            dragConstraints={{ left: 0, right: 0 }}
+            dragElastic={1}
+            onDragEnd={(e, { offset, velocity }) => {
+              const swipe = swipePower(offset.x, velocity.x);
 
-            if (swipe < -swipeConfidenceThreshold) {
-              paginate(1);
-            } else if (swipe > swipeConfidenceThreshold) {
-              paginate(-1);
-            }
-          }}
-        />
-      </AnimatePresence>
-    </div>
+              if (swipe < -swipeConfidenceThreshold) {
+                paginate(1);
+              } else if (swipe > swipeConfidenceThreshold) {
+                paginate(-1);
+              }
+            }}
+          />
+        </AnimatePresence>
+      </div>
+      <button
+        onClick={() => {
+          console.log("first");
+          paginate(1);
+        }}
+      >
+        Tambah
+      </button>
+    </React.Fragment>
   );
 }
 
