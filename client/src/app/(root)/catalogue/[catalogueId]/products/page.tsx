@@ -1,7 +1,7 @@
 import React from "react";
 import HeaderProduct from "../../components/header-product";
 import { getAllProduct } from "@/actions/product";
-import ListOfProducts from "../components/ListOfProducts";
+import ListOfProducts from "../components/list-of-products";
 
 type Props = {
   params: {
