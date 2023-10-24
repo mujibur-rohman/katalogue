@@ -1,14 +1,20 @@
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import { cn } from "@/lib/utils";
-import React from "react";
+/* eslint-disable @next/next/no-img-element */
+'use client';
+
+import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
+import { cn } from '@/lib/utils';
+import { PlusIcon } from 'lucide-react';
+import React, { useState } from 'react';
+import ShowMainPhoto from './show-main-photo';
 
 type Props = {};
 
 function FormAddProduct({}: Props) {
+  const [mainPhotoBlob, setMainPhotoBlob] = useState('');
   return (
     <form className="flex flex-col gap-4">
-      <div className="flex gap-2 items-start">
+      <div className="flex gap-2 items-start flex-col md:flex-row">
         <div className="w-full">
           <label htmlFor="name" className="font-medium inline-block mb-1">
             Product Name
@@ -64,6 +70,34 @@ function FormAddProduct({}: Props) {
           //   value={formik.values.description}
           //   onChange={formik.handleChange}
         />
+      </div>
+      <div>
+        <label htmlFor="desc" className="font-medium inline-block mb-1">
+          Main Photo
+        </label>
+        {/* Input File */}
+        <div className="relative w-32 h-32 border-dashed border-[1px] flex justify-center items-center rounded-lg">
+          <label
+            htmlFor="mainPhoto"
+            className="absolute inset-0 opacity-0 cursor-pointer"
+          ></label>
+          <input
+            id="mainPhoto"
+            type="file"
+            className="absolute inset-0 opacity-0 hidden"
+            onChange={(e) => {
+              if (!e.target.files?.length) return;
+              const blob = URL.createObjectURL(e.target.files[0]);
+              setMainPhotoBlob(blob);
+              console.log(blob);
+              console.log('s');
+            }}
+          />
+          <PlusIcon className="text-gray-500" />
+        </div>
+
+        {/* Main Photo Blob */}
+        {mainPhotoBlob && <ShowMainPhoto blobImg={mainPhotoBlob} />}
       </div>
     </form>
   );
