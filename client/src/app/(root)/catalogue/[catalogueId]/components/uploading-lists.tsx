@@ -1,5 +1,7 @@
 import { TypePayloadProduct } from "@/actions/product";
 import { fetcher } from "@/lib/api";
+import { useToast } from "@/lib/hooks/use-toast";
+import useValidationImage from "@/lib/hooks/use-validation-image";
 import { cn } from "@/lib/utils";
 import axios, { CancelTokenSource } from "axios";
 import { useFormikContext } from "formik";
@@ -18,11 +20,17 @@ function UploadingLists({ blob, imgFile, id, deletePhoto }: Props) {
   const [progress, setProgress] = useState<number>(0);
   const [errorMsg, setErrorMsg] = useState("");
   const [cancelToken, setCancelToken] = useState<CancelTokenSource>();
+  const { validateImage } = useValidationImage({
+    extPermissions: ["image/jpg", "image/jpeg", "image/png", "image/PNG"],
+    maxSize: 5000000,
+  });
+  const { toast } = useToast();
 
   const formik = useFormikContext<TypePayloadProduct>();
 
   const uploadFile = async (img: File) => {
     try {
+      validateImage(img);
       const source = axios.CancelToken.source();
       setCancelToken(source);
       const formData = new FormData();
@@ -64,7 +72,6 @@ function UploadingLists({ blob, imgFile, id, deletePhoto }: Props) {
       } else {
         setErrorMsg(error.message);
       }
-      console.log(error);
     }
   };
   useEffect(() => {
@@ -85,9 +92,15 @@ function UploadingLists({ blob, imgFile, id, deletePhoto }: Props) {
             onClick={async () => {
               try {
                 deletePhoto(id);
-                await fetcher.delete("/photo-product/" + idUpload);
-              } catch (error) {
-                console.log(error);
+                if (idUpload) {
+                  await fetcher.delete("/photo-product/" + idUpload);
+                }
+              } catch (error: any) {
+                toast({
+                  variant: "destructive",
+                  description: error.message,
+                  duration: 2000,
+                });
               }
             }}
             className="w-5 text-red-400 cursor-pointer"
