@@ -4,7 +4,7 @@
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { cn } from '@/lib/utils';
-import { PlusIcon } from 'lucide-react';
+import { ImageIcon, PlusIcon } from 'lucide-react';
 import React, { useState } from 'react';
 import ShowMainPhoto from './show-main-photo';
 import useValidationImage from '@/lib/hooks/use-validation-image';
@@ -18,14 +18,15 @@ type Props = {};
 
 function FormAddProduct({}: Props) {
   const [mainPhotoBlob, setMainPhotoBlob] = useState('');
+  const [othersPhoto, setOthersPhoto] = useState<
+    { imgFile: File; blob: string }[]
+  >([]);
   const [imgFile, setImgFile] = useState<File | null>(null);
-  const [errorThumbnail, setErrorThumbnail] = useState<string>('');
   const { validateImage } = useValidationImage({
     extPermissions: ['image/jpg', 'image/jpeg', 'image/png', 'image/PNG'],
     maxSize: 5000000,
   });
   const { toast } = useToast();
-
   const productConfig: FormikConfig<TypePayloadProduct> = {
     initialValues: {
       name: '',
@@ -54,6 +55,26 @@ function FormAddProduct({}: Props) {
       const blob = URL.createObjectURL(img);
       setMainPhotoBlob(blob);
       setImgFile(img);
+      e.target.value = '';
+    } catch (error: any) {
+      toast({
+        variant: 'destructive',
+        description: error.message,
+        duration: 2000,
+      });
+    }
+  };
+  console.log(othersPhoto);
+  const handleOthersPhoto = (e: React.ChangeEvent<HTMLInputElement>) => {
+    try {
+      if (!e.target.files?.length) return;
+      const tempFile = [];
+      const files = e.target.files;
+      for (let index = 0; index < files.length; index++) {
+        const blob = URL.createObjectURL(files[index]);
+        tempFile.push({ imgFile: files[index], blob });
+      }
+      setOthersPhoto(tempFile);
       e.target.value = '';
     } catch (error: any) {
       toast({
@@ -139,7 +160,7 @@ function FormAddProduct({}: Props) {
       </div>
       <FormikProvider value={formik}>
         <div>
-          <label htmlFor="desc" className="font-medium inline-block mb-1">
+          <label htmlFor="mainPhoto" className="font-medium inline-block mb-1">
             Main Photo
           </label>
           {/* Main Photo Blob */}
@@ -172,6 +193,50 @@ function FormAddProduct({}: Props) {
               <PlusIcon className="text-gray-500" />
             </div>
           )}
+        </div>
+        <div>
+          <label htmlFor="desc" className="font-medium inline-block mb-1">
+            Others Photo
+          </label>
+          <div
+            className={cn(
+              'relative w-32 h-32 border-dashed border-[1px] flex justify-center items-center rounded-lg'
+            )}
+          >
+            <label
+              htmlFor="photos"
+              className="absolute inset-0 opacity-0 cursor-pointer"
+            ></label>
+            <input
+              multiple
+              id="photos"
+              type="file"
+              accept="image/*"
+              className="absolute inset-0 opacity-0 hidden"
+              onChange={handleOthersPhoto}
+            />
+            <PlusIcon className="text-gray-500" />
+          </div>
+        </div>
+        <div className="border-[1px] rounded-lg p-3 flex flex-col gap-3">
+          {othersPhoto.map((photo, i) => (
+            <React.Fragment key={i}>
+              <div className="flex gap-2 items-center">
+                <ImageIcon className="w-8 text-gray-400" />
+                <span className="text-gray-500 whitespace-nowrap overflow-hidden truncate text-sm w-[99%]">
+                  {photo.imgFile.name}
+                </span>
+                <ImageIcon className="w-8 text-gray-400" />
+              </div>
+              <div className="relative h-1 bg-gray-300 rounded-lg overflow-hidden">
+                <div
+                  className={`absolute h-full left-0 transition-all bg-blue-500`}
+                  style={{ width: `${50}%` }}
+                ></div>
+              </div>
+              <span className="text-xs">uploading...</span>
+            </React.Fragment>
+          ))}
         </div>
       </FormikProvider>
 
