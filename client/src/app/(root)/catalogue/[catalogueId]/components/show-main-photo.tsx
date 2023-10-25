@@ -1,8 +1,10 @@
 /* eslint-disable @next/next/no-img-element */
-import { fetcher } from "@/lib/api";
-import axios, { CancelTokenSource } from "axios";
-import { Edit2Icon, RefreshCcwIcon } from "lucide-react";
-import React, { useEffect, useState } from "react";
+import { TypePayloadProduct } from '@/actions/product';
+import { fetcher } from '@/lib/api';
+import axios, { CancelTokenSource } from 'axios';
+import { useFormikContext } from 'formik';
+import { Edit2Icon, RefreshCcwIcon } from 'lucide-react';
+import React, { useEffect, useState } from 'react';
 
 type Props = {
   blobImg: string;
@@ -16,18 +18,21 @@ function ShowMainPhoto({ blobImg, imgFile, handleThumbnail }: Props) {
   );
   const [errorUpload, setErrorUpload] = useState<boolean>(false);
   const [progress, setProgress] = useState<number>(0);
+
+  const formik = useFormikContext<TypePayloadProduct>();
+
   const uploadFile = async (file: File) => {
     try {
       setErrorUpload(false);
       const source = axios.CancelToken.source();
       setCancelToken(source);
       const formData = new FormData();
-      formData.append("thumbnail", file);
+      formData.append('thumbnail', file);
       const thumbnail = await fetcher.post<{
         id: number;
         fileName: string;
         url: string;
-      }>("/thumbnail", formData, {
+      }>('/thumbnail', formData, {
         onUploadProgress: (progressEvent) => {
           if (progressEvent) {
             const percentCompleted =
@@ -39,6 +44,7 @@ function ShowMainPhoto({ blobImg, imgFile, handleThumbnail }: Props) {
         },
         cancelToken: source.token,
       });
+      formik.setFieldValue('thumbnailId', thumbnail.data.id);
     } catch (error: any) {
       setErrorUpload(true);
     }

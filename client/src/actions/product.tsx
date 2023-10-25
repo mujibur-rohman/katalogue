@@ -1,8 +1,8 @@
-import { fetcher } from "@/lib/api";
-import { TypeCatalogue } from "./catalogue";
+import { fetcher } from '@/lib/api';
+import { TypeCatalogue } from './catalogue';
 
-const productEndpoint = "/product";
-const thumbnailEndpoint = "/thumbnail";
+const productEndpoint = '/product';
+const thumbnailEndpoint = '/thumbnail';
 
 export type PaginationResponseProduct = {
   limit: number;
@@ -44,6 +44,13 @@ export type TypeProduct = {
   };
 };
 
+export type TypePayloadProduct = {
+  name: string;
+  description: string;
+  price: string;
+  thumbnailId?: number | null;
+};
+
 export async function getAllProduct({
   page = 1,
   limit = 5,
@@ -75,7 +82,7 @@ export async function getAllProduct({
 
 export async function getOneProduct(id: string) {
   try {
-    const product = await fetcher.get<TypeProduct>(productEndpoint + "/" + id);
+    const product = await fetcher.get<TypeProduct>(productEndpoint + '/' + id);
     return product.data;
   } catch (error: any) {
     console.log(error.response.status);
