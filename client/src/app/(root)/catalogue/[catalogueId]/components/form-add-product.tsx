@@ -1,44 +1,44 @@
 /* eslint-disable @next/next/no-img-element */
-'use client';
+"use client";
 
-import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
-import { cn } from '@/lib/utils';
-import { ImageIcon, PlusIcon } from 'lucide-react';
-import React, { useState } from 'react';
-import ShowMainPhoto from './show-main-photo';
-import useValidationImage from '@/lib/hooks/use-validation-image';
-import { FormikConfig, FormikProvider, useFormik } from 'formik';
-import * as yup from 'yup';
-import { TypePayloadProduct } from '@/actions/product';
-import { Button } from '@/components/ui/button';
-import { useToast } from '@/lib/hooks/use-toast';
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { cn } from "@/lib/utils";
+import { PlusIcon } from "lucide-react";
+import React, { useCallback, useState } from "react";
+import ShowMainPhoto from "./show-main-photo";
+import useValidationImage from "@/lib/hooks/use-validation-image";
+import { FormikConfig, FormikProvider, useFormik } from "formik";
+import * as yup from "yup";
+import { TypePayloadProduct } from "@/actions/product";
+import { Button } from "@/components/ui/button";
+import { useToast } from "@/lib/hooks/use-toast";
+import UploadingLists from "./uploading-lists";
 
-type Props = {};
-
-function FormAddProduct({}: Props) {
-  const [mainPhotoBlob, setMainPhotoBlob] = useState('');
+function FormAddProduct() {
+  const [mainPhotoBlob, setMainPhotoBlob] = useState("");
   const [othersPhoto, setOthersPhoto] = useState<
-    { imgFile: File; blob: string }[]
+    { imgFile: File; blob: string; id: number }[]
   >([]);
   const [imgFile, setImgFile] = useState<File | null>(null);
   const { validateImage } = useValidationImage({
-    extPermissions: ['image/jpg', 'image/jpeg', 'image/png', 'image/PNG'],
+    extPermissions: ["image/jpg", "image/jpeg", "image/png", "image/PNG"],
     maxSize: 5000000,
   });
   const { toast } = useToast();
   const productConfig: FormikConfig<TypePayloadProduct> = {
     initialValues: {
-      name: '',
-      description: '',
-      price: '',
+      name: "",
+      description: "",
+      price: "",
       thumbnailId: null,
+      photos: null,
     },
     validationSchema: yup.object({
       name: yup.string().trim().required().max(64),
       description: yup.string().trim().required(),
       price: yup.string().trim().required().max(64),
-      thumbnailId: yup.number().required('required photo'),
+      thumbnailId: yup.number().required("required photo"),
     }),
     onSubmit: async (values) => {
       console.log(values);
@@ -55,35 +55,46 @@ function FormAddProduct({}: Props) {
       const blob = URL.createObjectURL(img);
       setMainPhotoBlob(blob);
       setImgFile(img);
-      e.target.value = '';
+      e.target.value = "";
     } catch (error: any) {
       toast({
-        variant: 'destructive',
+        variant: "destructive",
         description: error.message,
         duration: 2000,
       });
     }
   };
-  console.log(othersPhoto);
   const handleOthersPhoto = (e: React.ChangeEvent<HTMLInputElement>) => {
     try {
       if (!e.target.files?.length) return;
-      const tempFile = [];
+      const tempFile: {
+        imgFile: File;
+        blob: string;
+        id: number;
+      }[] = [];
       const files = e.target.files;
       for (let index = 0; index < files.length; index++) {
         const blob = URL.createObjectURL(files[index]);
-        tempFile.push({ imgFile: files[index], blob });
+        tempFile.push({ imgFile: files[index], blob, id: Date.now() });
       }
-      setOthersPhoto(tempFile);
-      e.target.value = '';
+      setOthersPhoto((prev) => [...prev, ...tempFile]);
+      e.target.value = "";
     } catch (error: any) {
       toast({
-        variant: 'destructive',
+        variant: "destructive",
         description: error.message,
         duration: 2000,
       });
     }
   };
+
+  const deleteOtherPhoto = useCallback(
+    (id: number) => {
+      const newPhotos = othersPhoto.filter((photo) => photo.id !== id);
+      setOthersPhoto(newPhotos);
+    },
+    [othersPhoto]
+  );
 
   return (
     <form onSubmit={formik.handleSubmit} className="flex flex-col gap-4">
@@ -101,7 +112,7 @@ function FormAddProduct({}: Props) {
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
             className={cn({
-              '!ring-destructive border-destructive':
+              "!ring-destructive border-destructive":
                 formik.errors.name && formik.touched.name,
             })}
           />
@@ -122,11 +133,11 @@ function FormAddProduct({}: Props) {
             onChange={(e) => {
               const regex = /^\d+$/;
               if (!regex.test(e.target.value) && e.target.value.length) return;
-              formik.setFieldValue('price', e.target.value);
+              formik.setFieldValue("price", e.target.value);
             }}
             onBlur={formik.handleBlur}
             className={cn({
-              '!ring-destructive border-destructive':
+              "!ring-destructive border-destructive":
                 formik.errors.price && formik.touched.price,
             })}
           />
@@ -148,7 +159,7 @@ function FormAddProduct({}: Props) {
           onChange={formik.handleChange}
           onBlur={formik.handleBlur}
           className={cn({
-            '!ring-destructive border-destructive':
+            "!ring-destructive border-destructive":
               formik.errors.description && formik.touched.description,
           })}
         />
@@ -173,9 +184,10 @@ function FormAddProduct({}: Props) {
           ) : (
             <div
               className={cn(
-                'relative w-32 h-32 border-dashed border-[1px] flex justify-center items-center rounded-lg',
+                "relative w-32 h-32 border-dashed border-[1px] flex justify-center items-center rounded-lg",
                 {
-                  'border-destructive': formik.errors.thumbnailId,
+                  "border-destructive":
+                    formik.touched.thumbnailId && formik.errors.thumbnailId,
                 }
               )}
             >
@@ -200,7 +212,7 @@ function FormAddProduct({}: Props) {
           </label>
           <div
             className={cn(
-              'relative w-32 h-32 border-dashed border-[1px] flex justify-center items-center rounded-lg'
+              "relative w-32 h-32 border-dashed border-[1px] flex justify-center items-center rounded-lg"
             )}
           >
             <label
@@ -218,26 +230,19 @@ function FormAddProduct({}: Props) {
             <PlusIcon className="text-gray-500" />
           </div>
         </div>
-        <div className="border-[1px] rounded-lg p-3 flex flex-col gap-3">
-          {othersPhoto.map((photo, i) => (
-            <React.Fragment key={i}>
-              <div className="flex gap-2 items-center">
-                <ImageIcon className="w-8 text-gray-400" />
-                <span className="text-gray-500 whitespace-nowrap overflow-hidden truncate text-sm w-[99%]">
-                  {photo.imgFile.name}
-                </span>
-                <ImageIcon className="w-8 text-gray-400" />
-              </div>
-              <div className="relative h-1 bg-gray-300 rounded-lg overflow-hidden">
-                <div
-                  className={`absolute h-full left-0 transition-all bg-blue-500`}
-                  style={{ width: `${50}%` }}
-                ></div>
-              </div>
-              <span className="text-xs">uploading...</span>
-            </React.Fragment>
-          ))}
-        </div>
+        {othersPhoto.length ? (
+          <div className="border-[1px] rounded-lg p-3 flex flex-col gap-3">
+            {othersPhoto.map((photo) => (
+              <UploadingLists
+                key={photo.id}
+                blob={photo.blob}
+                imgFile={photo.imgFile}
+                id={photo.id}
+                deletePhoto={deleteOtherPhoto}
+              />
+            ))}
+          </div>
+        ) : null}
       </FormikProvider>
 
       <Button type="submit">Add Product</Button>
