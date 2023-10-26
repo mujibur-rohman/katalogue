@@ -1,36 +1,38 @@
 /* eslint-disable @next/next/no-img-element */
-'use client';
+"use client";
 
-import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
-import { cn } from '@/lib/utils';
-import { PlusIcon } from 'lucide-react';
-import React, { useCallback, useState } from 'react';
-import ShowMainPhoto from './show-main-photo';
-import useValidationImage from '@/lib/hooks/use-validation-image';
-import { FormikConfig, FormikProvider, useFormik } from 'formik';
-import * as yup from 'yup';
-import { TypePayloadProduct } from '@/actions/product';
-import { Button } from '@/components/ui/button';
-import { useToast } from '@/lib/hooks/use-toast';
-import UploadingLists from './uploading-lists';
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { cn } from "@/lib/utils";
+import { PlusIcon } from "lucide-react";
+import React, { useCallback, useState } from "react";
+import ShowMainPhoto from "./show-main-photo";
+import useValidationImage from "@/lib/hooks/use-validation-image";
+import { FormikConfig, FormikProvider, useFormik } from "formik";
+import * as yup from "yup";
+import { TypePayloadProduct } from "@/actions/product";
+import { Button } from "@/components/ui/button";
+import { useToast } from "@/lib/hooks/use-toast";
+import UploadingLists from "./uploading-lists";
+import { TypeAttribute } from "@/actions/attribute";
+import AttributeForm from "./attribute-form";
 
-function FormAddProduct() {
-  const [mainPhotoBlob, setMainPhotoBlob] = useState('');
+function FormAddProduct({ attributes }: { attributes: TypeAttribute[] }) {
+  const [mainPhotoBlob, setMainPhotoBlob] = useState("");
   const [othersPhoto, setOthersPhoto] = useState<
     { imgFile: File; blob: string; id: number }[]
   >([]);
   const [imgFile, setImgFile] = useState<File | null>(null);
   const { validateImage } = useValidationImage({
-    extPermissions: ['image/jpg', 'image/jpeg', 'image/png', 'image/PNG'],
+    extPermissions: ["image/jpg", "image/jpeg", "image/png", "image/PNG"],
     maxSize: 5000000,
   });
   const { toast } = useToast();
   const productConfig: FormikConfig<TypePayloadProduct> = {
     initialValues: {
-      name: '',
-      description: '',
-      price: '',
+      name: "",
+      description: "",
+      price: "",
       thumbnailId: null,
       photos: null,
     },
@@ -38,7 +40,7 @@ function FormAddProduct() {
       name: yup.string().trim().required().max(64),
       description: yup.string().trim().required(),
       price: yup.string().trim().required().max(64),
-      thumbnailId: yup.number().required('required photo'),
+      thumbnailId: yup.number().required("required photo"),
     }),
     onSubmit: async (values) => {
       console.log(values);
@@ -55,10 +57,10 @@ function FormAddProduct() {
       const blob = URL.createObjectURL(img);
       setMainPhotoBlob(blob);
       setImgFile(img);
-      e.target.value = '';
+      e.target.value = "";
     } catch (error: any) {
       toast({
-        variant: 'destructive',
+        variant: "destructive",
         description: error.message,
         duration: 2000,
       });
@@ -78,10 +80,10 @@ function FormAddProduct() {
         tempFile.push({ imgFile: files[index], blob, id: Date.now() });
       }
       setOthersPhoto((prev) => [...prev, ...tempFile]);
-      e.target.value = '';
+      e.target.value = "";
     } catch (error: any) {
       toast({
-        variant: 'destructive',
+        variant: "destructive",
         description: error.message,
         duration: 2000,
       });
@@ -97,7 +99,7 @@ function FormAddProduct() {
   );
 
   return (
-    <form onSubmit={formik.handleSubmit} className="flex flex-col gap-4">
+    <form onSubmit={formik.handleSubmit} className="flex flex-col gap-4 mb-5">
       <div className="flex gap-2 items-start flex-col md:flex-row">
         <div className="w-full">
           <label htmlFor="name" className="font-medium inline-block mb-1">
@@ -112,7 +114,7 @@ function FormAddProduct() {
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
             className={cn({
-              '!ring-destructive border-destructive':
+              "!ring-destructive border-destructive":
                 formik.errors.name && formik.touched.name,
             })}
           />
@@ -133,11 +135,11 @@ function FormAddProduct() {
             onChange={(e) => {
               const regex = /^\d+$/;
               if (!regex.test(e.target.value) && e.target.value.length) return;
-              formik.setFieldValue('price', e.target.value);
+              formik.setFieldValue("price", e.target.value);
             }}
             onBlur={formik.handleBlur}
             className={cn({
-              '!ring-destructive border-destructive':
+              "!ring-destructive border-destructive":
                 formik.errors.price && formik.touched.price,
             })}
           />
@@ -159,7 +161,7 @@ function FormAddProduct() {
           onChange={formik.handleChange}
           onBlur={formik.handleBlur}
           className={cn({
-            '!ring-destructive border-destructive':
+            "!ring-destructive border-destructive":
               formik.errors.description && formik.touched.description,
           })}
         />
@@ -184,9 +186,9 @@ function FormAddProduct() {
           ) : (
             <div
               className={cn(
-                'relative w-32 h-32 border-dashed border-[1px] flex justify-center items-center rounded-lg',
+                "relative w-32 h-32 border-dashed border-[1px] flex justify-center items-center rounded-lg",
                 {
-                  'border-destructive':
+                  "border-destructive":
                     formik.touched.thumbnailId && formik.errors.thumbnailId,
                 }
               )}
@@ -212,7 +214,7 @@ function FormAddProduct() {
           </label>
           <div
             className={cn(
-              'relative w-32 h-32 border-dashed border-[1px] flex justify-center items-center rounded-lg'
+              "relative w-32 h-32 border-dashed border-[1px] flex justify-center items-center rounded-lg"
             )}
           >
             <label
@@ -244,12 +246,10 @@ function FormAddProduct() {
           </div>
         ) : null}
         <div>
-          <label className="font-medium inline-block mb-1">Attributes</label>
-          <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-3">
-            <div>s</div>
-            <div>s</div>
-            <div>s</div>
-          </div>
+          <label className="font-medium inline-block mb-1">
+            Choose Attributes
+          </label>
+          <AttributeForm attributes={attributes} />
         </div>
       </FormikProvider>
 

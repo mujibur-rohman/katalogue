@@ -56,7 +56,6 @@ function ShowMainPhoto({ blobImg, imgFile, handleThumbnail }: Props) {
     }
   }, [imgFile]);
 
-  console.log(progress, blobImg);
 
   return (
     <div className="relative w-32 h-32 rounded-lg flex justify-center items-center bg-black overflow-hidden">
