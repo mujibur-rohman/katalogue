@@ -73,22 +73,42 @@ const getAll = async (req: Request, res: Response, next: NextFunction) => {
       },
     });
 
-    const attr = await db.attribute.findMany({
-      skip: offset,
-      take: parseInt(limit as string),
-      where: {
-        name: {
-          contains: query as string,
+    let attr = [];
+
+    if (parseInt(req.query.limit as string) == -1) {
+      attr = await db.attribute.findMany({
+        where: {
+          name: {
+            contains: query as string,
+          },
+          userId: user.id,
         },
-        userId: user.id,
-      },
-      orderBy: {
-        id: "desc",
-      },
-      include: {
-        item: true,
-      },
-    });
+        orderBy: {
+          id: "desc",
+        },
+        include: {
+          item: true,
+        },
+      });
+    } else {
+      attr = await db.attribute.findMany({
+        skip: offset,
+        take: parseInt(limit as string),
+        where: {
+          name: {
+            contains: query as string,
+          },
+          userId: user.id,
+        },
+        orderBy: {
+          id: "desc",
+        },
+        include: {
+          item: true,
+        },
+      });
+    }
+
     res.status(200).json({
       limit: parseInt(limit as string),
       page: parseInt(page as string),

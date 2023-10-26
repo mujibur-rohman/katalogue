@@ -49,6 +49,12 @@ export type TypePayloadProduct = {
   price: string;
   thumbnailId?: number | null;
   photos?: number[] | null;
+  attributes:
+    | {
+        attributeId: number;
+        itemId: number[];
+      }[]
+    | null;
 };
 
 export async function getAllProduct({

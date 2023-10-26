@@ -35,12 +35,13 @@ function FormAddProduct({ attributes }: { attributes: TypeAttribute[] }) {
       price: "",
       thumbnailId: null,
       photos: null,
+      attributes: null,
     },
     validationSchema: yup.object({
       name: yup.string().trim().required().max(64),
       description: yup.string().trim().required(),
       price: yup.string().trim().required().max(64),
-      thumbnailId: yup.number().required("required photo"),
+      // thumbnailId: yup.number().required("required photo"),
     }),
     onSubmit: async (values) => {
       console.log(values);
@@ -97,7 +98,7 @@ function FormAddProduct({ attributes }: { attributes: TypeAttribute[] }) {
     },
     [othersPhoto]
   );
-
+  console.log(formik.values);
   return (
     <form onSubmit={formik.handleSubmit} className="flex flex-col gap-4 mb-5">
       <div className="flex gap-2 items-start flex-col md:flex-row">
