@@ -17,6 +17,10 @@ function SubNavbar({}: Props) {
     ? subMenus.SUB_MENUS
     : subMenus.SUB_MENUS_CATALOGUE(catalogueId as string);
 
+  if (pathname.includes("/edit") || pathname.includes("/add")) {
+    return null;
+  }
+
   return (
     <div className="border-b-[1px] px-3 md:px-12 flex bg-background">
       {menus.map((menu) => (
@@ -29,7 +33,7 @@ function SubNavbar({}: Props) {
           >
             {menu.name}
           </Link>
-          {pathname.startsWith(menu.path) && (
+          {pathname.includes(menu.path) && (
             <motion.div
               layoutId="border-menu"
               className="absolute border-b-[1px] border-blue-400 left-0 right-0 bottom-0"

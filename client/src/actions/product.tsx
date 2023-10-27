@@ -1,3 +1,4 @@
+"use server";
 import { fetcher } from "@/lib/api";
 import { TypeCatalogue } from "./catalogue";
 import { revalidatePath } from "next/cache";
@@ -103,7 +104,7 @@ export async function getOneProduct(id: string) {
 export async function addProduct(payload: TypePayloadProduct) {
   try {
     const product = await fetcher.post(productEndpoint, payload);
-    // revalidatePath("/catalogue/[catalogueId]");
+    revalidatePath("/catalogue/[catalogueId]");
     return product.data;
   } catch (error: any) {
     if (error.response?.data) {

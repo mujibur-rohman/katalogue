@@ -11,7 +11,7 @@ const SUB_MENUS = [
 const SUB_MENUS_CATALOGUE = (id: string) => {
   return [
     {
-      path: "/catalogue/" + id,
+      path: "/catalogue/" + id + "/view",
       name: "Information",
     },
     {

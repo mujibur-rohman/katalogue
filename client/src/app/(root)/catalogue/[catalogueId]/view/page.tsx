@@ -1,6 +1,6 @@
 import { getOneCatalogue } from "@/actions/catalogue";
 import { BoxesIcon, EyeIcon } from "lucide-react";
-import CopyUrl from "../components/copy-url";
+import CopyUrl from "../../components/copy-url";
 
 type Props = {
   params: {

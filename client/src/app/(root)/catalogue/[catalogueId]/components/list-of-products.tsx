@@ -38,7 +38,7 @@ function ListOfProducts({ products }: Props) {
           <div className="overflow-hidden">
             <img
               src={product.thumbnail.url}
-              className="w-full hover:scale-110 transition-transform duration-500"
+              className="w-full h-[15rem] object-cover object-center hover:scale-110 transition-transform duration-500"
               alt="product"
             />
           </div>

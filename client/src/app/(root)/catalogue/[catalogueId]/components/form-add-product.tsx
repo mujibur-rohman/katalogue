@@ -55,7 +55,7 @@ function FormAddProduct({ attributes }: { attributes: TypeAttribute[] }) {
           description: "Product add successfully",
           duration: 2000,
         });
-        router.replace("/catalogue/" + catalogueId);
+        router.replace("/catalogue/" + catalogueId + "/products");
       } catch (error: any) {
         toast({
           variant: "destructive",
@@ -116,7 +116,6 @@ function FormAddProduct({ attributes }: { attributes: TypeAttribute[] }) {
     },
     [othersPhoto]
   );
-  console.log(formik.values);
   return (
     <form onSubmit={formik.handleSubmit} className="flex flex-col gap-4 mb-5">
       <div className="flex gap-2 items-start flex-col md:flex-row">

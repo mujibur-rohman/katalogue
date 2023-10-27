@@ -119,7 +119,7 @@ function ItemCatalogue({ catalogue }: Props) {
           <span className="text-sm">{catalogue.products.length} Product</span>
         </div>
         <Link
-          href={pathname + "/" + catalogue.id}
+          href={pathname + "/" + catalogue.id + "/view"}
           className="text-blue-500 text-sm flex items-center underline"
         >
           More Details
