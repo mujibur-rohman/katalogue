@@ -10,12 +10,13 @@ import ShowMainPhoto from "./show-main-photo";
 import useValidationImage from "@/lib/hooks/use-validation-image";
 import { FormikConfig, FormikProvider, useFormik } from "formik";
 import * as yup from "yup";
-import { TypePayloadProduct } from "@/actions/product";
+import { TypePayloadProduct, addProduct } from "@/actions/product";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/lib/hooks/use-toast";
 import UploadingLists from "./uploading-lists";
 import { TypeAttribute } from "@/actions/attribute";
 import AttributeForm from "./attribute-form";
+import { useParams, useRouter } from "next/navigation";
 
 function FormAddProduct({ attributes }: { attributes: TypeAttribute[] }) {
   const [mainPhotoBlob, setMainPhotoBlob] = useState("");
@@ -27,7 +28,10 @@ function FormAddProduct({ attributes }: { attributes: TypeAttribute[] }) {
     extPermissions: ["image/jpg", "image/jpeg", "image/png", "image/PNG"],
     maxSize: 5000000,
   });
+  const router = useRouter();
+  const { catalogueId } = useParams();
   const { toast } = useToast();
+
   const productConfig: FormikConfig<TypePayloadProduct> = {
     initialValues: {
       name: "",
@@ -41,10 +45,24 @@ function FormAddProduct({ attributes }: { attributes: TypeAttribute[] }) {
       name: yup.string().trim().required().max(64),
       description: yup.string().trim().required(),
       price: yup.string().trim().required().max(64),
-      // thumbnailId: yup.number().required("required photo"),
+      thumbnailId: yup.number().required("required photo"),
     }),
     onSubmit: async (values) => {
-      console.log(values);
+      try {
+        await addProduct({ ...values, catalogueId: catalogueId as string });
+        toast({
+          variant: "success",
+          description: "Product add successfully",
+          duration: 2000,
+        });
+        router.replace("/catalogue/" + catalogueId);
+      } catch (error: any) {
+        toast({
+          variant: "destructive",
+          description: error.message,
+          duration: 2000,
+        });
+      }
     },
   };
 

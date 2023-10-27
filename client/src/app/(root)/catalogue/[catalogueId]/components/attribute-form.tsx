@@ -61,6 +61,31 @@ function AttributeForm({ attributes }: { attributes: TypeAttribute[] }) {
                   <Checkbox
                     disabled={!availableChecked?.length}
                     id={item.id.toString() + "-item"}
+                    onCheckedChange={(val) => {
+                      if (formik.values.attributes) {
+                        const idxAttr = formik.values.attributes.findIndex(
+                          (attr) => attr.attributeId === item.attributeId
+                        );
+                        const currentData = formik.values.attributes[idxAttr];
+
+                        if (!val) {
+                          const newItemData = currentData.itemId.filter(
+                            (i) => i !== item.id
+                          );
+                          formik.setFieldValue(`attributes[${idxAttr}]`, {
+                            attributeId: currentData.attributeId,
+                            itemId: newItemData,
+                          });
+                          return;
+                        }
+
+                        // * if checked
+                        formik.setFieldValue(`attributes[${idxAttr}]`, {
+                          attributeId: currentData.attributeId,
+                          itemId: [...currentData.itemId, item.id],
+                        });
+                      }
+                    }}
                   />
                 </label>
               );

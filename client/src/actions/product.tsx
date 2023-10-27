@@ -1,5 +1,6 @@
 import { fetcher } from "@/lib/api";
 import { TypeCatalogue } from "./catalogue";
+import { revalidatePath } from "next/cache";
 
 const productEndpoint = "/product";
 
@@ -44,6 +45,7 @@ export type TypeProduct = {
 };
 
 export type TypePayloadProduct = {
+  catalogueId?: null | string;
   name: string;
   description: string;
   price: string;
@@ -91,7 +93,19 @@ export async function getOneProduct(id: string) {
     const product = await fetcher.get<TypeProduct>(productEndpoint + "/" + id);
     return product.data;
   } catch (error: any) {
-    console.log(error.response.status);
+    if (error.response?.data) {
+      throw new Error(error.response.data.errors);
+    }
+    throw new Error(error.message);
+  }
+}
+
+export async function addProduct(payload: TypePayloadProduct) {
+  try {
+    const product = await fetcher.post(productEndpoint, payload);
+    // revalidatePath("/catalogue/[catalogueId]");
+    return product.data;
+  } catch (error: any) {
     if (error.response?.data) {
       throw new Error(error.response.data.errors);
     }
