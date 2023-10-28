@@ -1,10 +1,10 @@
 /* eslint-disable @next/next/no-img-element */
-import { TypePayloadProduct } from '@/actions/product';
-import { fetcher } from '@/lib/api';
-import axios, { CancelTokenSource } from 'axios';
-import { useFormikContext } from 'formik';
-import { Edit2Icon, RefreshCcwIcon } from 'lucide-react';
-import React, { useEffect, useState } from 'react';
+import { TypePayloadProduct } from "@/actions/product";
+import { fetcher } from "@/lib/api";
+import axios, { CancelTokenSource } from "axios";
+import { useFormikContext } from "formik";
+import { Edit2Icon, RefreshCcwIcon } from "lucide-react";
+import React, { useEffect, useState } from "react";
 
 type Props = {
   blobImg: string;
@@ -27,12 +27,12 @@ function ShowMainPhoto({ blobImg, imgFile, handleThumbnail }: Props) {
       const source = axios.CancelToken.source();
       setCancelToken(source);
       const formData = new FormData();
-      formData.append('thumbnail', file);
+      formData.append("thumbnail", file);
       const thumbnail = await fetcher.post<{
         id: number;
         fileName: string;
         url: string;
-      }>('/thumbnail', formData, {
+      }>("/thumbnail", formData, {
         onUploadProgress: (progressEvent) => {
           if (progressEvent) {
             const percentCompleted =
@@ -44,7 +44,7 @@ function ShowMainPhoto({ blobImg, imgFile, handleThumbnail }: Props) {
         },
         cancelToken: source.token,
       });
-      formik.setFieldValue('thumbnailId', thumbnail.data.id);
+      formik.setFieldValue("thumbnailId", thumbnail.data.id);
     } catch (error: any) {
       setErrorUpload(true);
     }
@@ -56,7 +56,6 @@ function ShowMainPhoto({ blobImg, imgFile, handleThumbnail }: Props) {
     }
   }, [imgFile]);
 
-
   return (
     <div className="relative w-32 h-32 rounded-lg flex justify-center items-center bg-black overflow-hidden">
       <img
@@ -64,7 +63,7 @@ function ShowMainPhoto({ blobImg, imgFile, handleThumbnail }: Props) {
         alt="main-photo"
         className="object-center group object-cover w-full h-full"
       />
-      {progress < 100 ? (
+      {imgFile && progress < 100 ? (
         <div className="absolute bg-black/70 inset-0 flex justify-center items-center text-white text-sm">
           Loading {Math.floor(progress)}%
         </div>

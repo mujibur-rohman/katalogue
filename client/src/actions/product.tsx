@@ -100,10 +100,45 @@ export async function getOneProduct(id: string) {
     throw new Error(error.message);
   }
 }
+export async function deleteProduct(id: number) {
+  try {
+    const product = await fetcher.delete(productEndpoint + "/" + id);
+    revalidatePath("/catalogue/[catalogueId]");
+    return product.data;
+  } catch (error: any) {
+    if (error.response?.data) {
+      throw new Error(error.response.data.errors);
+    }
+    throw new Error(error.message);
+  }
+}
 
 export async function addProduct(payload: TypePayloadProduct) {
   try {
     const product = await fetcher.post(productEndpoint, payload);
+    revalidatePath("/catalogue/[catalogueId]");
+    return product.data;
+  } catch (error: any) {
+    if (error.response?.data) {
+      throw new Error(error.response.data.errors);
+    }
+    throw new Error(error.message);
+  }
+}
+
+export async function updateProduct({
+  payload,
+  productId,
+}: {
+  payload: TypePayloadProduct;
+  productId: number;
+}) {
+  const { catalogueId, ...finalPayload } = payload;
+  try {
+    const product = await fetcher.put(
+      `${productEndpoint}/${productId}`,
+      finalPayload
+    );
     revalidatePath("/catalogue/[catalogueId]");
     return product.data;
   } catch (error: any) {

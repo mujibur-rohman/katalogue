@@ -9,13 +9,14 @@ import { ImageIcon, RefreshCcwIcon, TrashIcon, XIcon } from "lucide-react";
 import React, { useEffect, useState } from "react";
 
 type Props = {
-  imgFile: File;
-  blob: string;
+  imgFile?: File;
+  fileName?: string;
+  blob?: string;
   id: number;
   deletePhoto: (id: number) => void;
 };
 
-function UploadingLists({ blob, imgFile, id, deletePhoto }: Props) {
+function UploadingLists({ blob, imgFile, id, deletePhoto, fileName }: Props) {
   const [idUpload, setIdUpload] = useState<number | null>(null);
   const [progress, setProgress] = useState<number>(0);
   const [errorMsg, setErrorMsg] = useState("");
@@ -85,16 +86,27 @@ function UploadingLists({ blob, imgFile, id, deletePhoto }: Props) {
       <div className="flex gap-2 items-center mb-2">
         <ImageIcon className="w-8 text-gray-400" />
         <span className="text-gray-500 whitespace-nowrap overflow-hidden truncate text-sm w-[99%]">
-          {imgFile.name}
+          {fileName || imgFile?.name || ""}
         </span>
-        {progress === 100 && (
+        {(progress === 100 || !imgFile) && (
           <TrashIcon
             onClick={async () => {
               try {
                 deletePhoto(id);
                 if (idUpload) {
                   await fetcher.delete("/photo-product/" + idUpload);
+                  const newPhoto = formik.values.photos?.filter(
+                    (photo) => photo !== idUpload
+                  );
+                  formik.setFieldValue("photos", newPhoto);
+                  return;
                 }
+
+                // * filter with id if update
+                const newPhoto = formik.values.photos?.filter(
+                  (photo) => photo !== id
+                );
+                formik.setFieldValue("photos", newPhoto);
               } catch (error: any) {
                 toast({
                   variant: "destructive",
@@ -106,7 +118,7 @@ function UploadingLists({ blob, imgFile, id, deletePhoto }: Props) {
             className="w-5 text-red-400 cursor-pointer"
           />
         )}
-        {progress < 100 && !errorMsg && (
+        {imgFile && progress < 100 && !errorMsg && (
           <XIcon
             onClick={() => {
               if (cancelToken) {
@@ -121,26 +133,30 @@ function UploadingLists({ blob, imgFile, id, deletePhoto }: Props) {
             onClick={() => {
               setProgress(0);
               setErrorMsg("");
-              uploadFile(imgFile);
+              if (imgFile) {
+                uploadFile(imgFile);
+              }
             }}
             className="w-5 text-orange-400 cursor-pointer"
           />
         )}
       </div>
-      <div className="relative h-1 bg-gray-300 rounded-lg overflow-hidden">
-        <div
-          className={cn("absolute h-full left-0 transition-all", {
-            "bg-blue-500": !errorMsg && progress < 100,
-            "bg-green-500": !errorMsg && progress === 100,
-            "bg-red-500": errorMsg,
-          })}
-          style={{ width: `${progress}%` }}
-        ></div>
-      </div>
-      {progress < 100 && !errorMsg && (
+      {imgFile ? (
+        <div className="relative h-1 bg-gray-300 rounded-lg overflow-hidden">
+          <div
+            className={cn("absolute h-full left-0 transition-all", {
+              "bg-blue-500": !errorMsg && progress < 100,
+              "bg-green-500": !errorMsg && progress === 100,
+              "bg-red-500": errorMsg,
+            })}
+            style={{ width: `${progress}%` }}
+          ></div>
+        </div>
+      ) : null}
+      {imgFile && progress < 100 && !errorMsg && (
         <span className="text-xs">uploading {Math.floor(progress)}%</span>
       )}
-      {progress === 100 && !errorMsg && (
+      {imgFile && progress === 100 && !errorMsg && (
         <span className="text-xs text-green-500">completed!</span>
       )}
       {errorMsg && <span className="text-xs text-destructive">{errorMsg}</span>}

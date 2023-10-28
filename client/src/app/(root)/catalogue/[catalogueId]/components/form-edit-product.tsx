@@ -10,7 +10,12 @@ import ShowMainPhoto from "./show-main-photo";
 import useValidationImage from "@/lib/hooks/use-validation-image";
 import { FormikConfig, FormikProvider, useFormik } from "formik";
 import * as yup from "yup";
-import { TypePayloadProduct, addProduct } from "@/actions/product";
+import {
+  TypePayloadProduct,
+  TypeProduct,
+  addProduct,
+  updateProduct,
+} from "@/actions/product";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/lib/hooks/use-toast";
 import UploadingLists from "./uploading-lists";
@@ -18,28 +23,51 @@ import { TypeAttribute } from "@/actions/attribute";
 import AttributeForm from "./attribute-form";
 import { useParams, useRouter } from "next/navigation";
 
-function FormAddProduct({ attributes }: { attributes: TypeAttribute[] }) {
-  const [mainPhotoBlob, setMainPhotoBlob] = useState("");
+function FormEditProduct({
+  attributes,
+  product,
+}: {
+  attributes: TypeAttribute[];
+  product: TypeProduct;
+}) {
+  const [mainPhotoBlob, setMainPhotoBlob] = useState(
+    product.thumbnail.url || ""
+  );
   const [othersPhoto, setOthersPhoto] = useState<
-    { imgFile: File; blob: string; id: number }[]
-  >([]);
+    { imgFile?: File; blob?: string; id: number; fileName?: string }[]
+  >(
+    product.photos.length
+      ? product.photos.map((photo) => ({
+          blob: photo.url,
+          id: photo.id,
+          fileName: photo.fileName,
+        }))
+      : []
+  );
   const [imgFile, setImgFile] = useState<File | null>(null);
   const { validateImage } = useValidationImage({
     extPermissions: ["image/jpg", "image/jpeg", "image/png", "image/PNG"],
     maxSize: 5000000,
   });
   const router = useRouter();
-  const { catalogueId } = useParams();
+  const { productId } = useParams();
   const { toast } = useToast();
 
   const productConfig: FormikConfig<TypePayloadProduct> = {
     initialValues: {
-      name: "",
-      description: "",
-      price: "",
-      thumbnailId: null,
-      photos: null,
-      attributes: null,
+      name: product.name,
+      description: product.description,
+      price: product.price,
+      thumbnailId: product.thumbnail.id,
+      photos: product.photos.length
+        ? product.photos.map((photo) => photo.id)
+        : [],
+      attributes: product.attributes.length
+        ? product.attributes.map((att) => ({
+            attributeId: att.attribute.id,
+            itemId: att.item.map((i) => i.attributeItem.id),
+          }))
+        : [],
     },
     validationSchema: yup.object({
       name: yup.string().trim().required().max(64),
@@ -50,13 +78,16 @@ function FormAddProduct({ attributes }: { attributes: TypeAttribute[] }) {
     onSubmit: async (values) => {
       try {
         console.log(values);
-        await addProduct({ ...values, catalogueId: catalogueId as string });
+        await updateProduct({
+          payload: values,
+          productId: parseInt(productId as string),
+        });
         toast({
           variant: "success",
-          description: "Product add successfully",
+          description: "Product update successfully",
           duration: 2000,
         });
-        router.replace("/catalogue/" + catalogueId + "/products");
+        // router.replace("/catalogue/" + catalogueId + "/products");
       } catch (error: any) {
         toast({
           variant: "destructive",
@@ -256,8 +287,8 @@ function FormAddProduct({ attributes }: { attributes: TypeAttribute[] }) {
             {othersPhoto.map((photo) => (
               <UploadingLists
                 key={photo.id}
-                blob={photo.blob}
                 imgFile={photo.imgFile}
+                fileName={photo.fileName}
                 id={photo.id}
                 deletePhoto={deleteOtherPhoto}
               />
@@ -272,9 +303,11 @@ function FormAddProduct({ attributes }: { attributes: TypeAttribute[] }) {
         </div>
       </FormikProvider>
 
-      <Button type="submit">Add Product</Button>
+      <Button disabled={formik.isSubmitting} type="submit">
+        Update
+      </Button>
     </form>
   );
 }
 
-export default FormAddProduct;
+export default FormEditProduct;
