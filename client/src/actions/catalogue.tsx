@@ -1,6 +1,7 @@
 "use server";
 import { fetcher } from "@/lib/api";
 import { revalidatePath } from "next/cache";
+import { TypeProduct } from "./product";
 
 const catalogueEndpoint = "/catalogues";
 
@@ -19,7 +20,7 @@ export type TypeCatalogue = {
   slug: string;
   visitCount: number;
   userId: string;
-  products: {}[]; // todo product type
+  products: TypeProduct[];
 };
 
 export type TypePayloadCatalogue = {
@@ -132,7 +133,20 @@ export async function getOneCatalogue(id: string) {
     );
     return catalogues.data;
   } catch (error: any) {
-    console.log(error.response.status);
+    if (error.response?.data) {
+      throw new Error(error.response.data.errors);
+    }
+    throw new Error(error.message);
+  }
+}
+
+export async function getOneCatalogueBySlug(slug: string) {
+  try {
+    const catalogues = await fetcher.get<TypeCatalogue>(
+      catalogueEndpoint + "/slug/" + slug
+    );
+    return catalogues.data;
+  } catch (error: any) {
     if (error.response?.data) {
       throw new Error(error.response.data.errors);
     }

@@ -1,39 +1,39 @@
-'use client';
+"use client";
 
 import {
   TypePayloadCatalogue,
   addCatalogue,
   checkSlug,
-} from '@/actions/catalogue';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
-import useDebounce from '@/lib/hooks/use-debounce';
-import { useToast } from '@/lib/hooks/use-toast';
-import { cn } from '@/lib/utils';
-import { FormikConfig, useFormik } from 'formik';
-import { Link } from 'lucide-react';
-import { useSession } from 'next-auth/react';
-import { useRouter } from 'next/navigation';
-import { useEffect, useState } from 'react';
-import * as yup from 'yup';
+} from "@/actions/catalogue";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import useDebounce from "@/lib/hooks/use-debounce";
+import { useToast } from "@/lib/hooks/use-toast";
+import { cn } from "@/lib/utils";
+import { FormikConfig, useFormik } from "formik";
+import { Link } from "lucide-react";
+import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import * as yup from "yup";
 
 type Props = {};
 
 function FormAdd({}: Props) {
-  const [slugError, setSlugError] = useState('');
-  const [slugSuccess, setSlugSuccess] = useState('');
+  const [slugError, setSlugError] = useState("");
+  const [slugSuccess, setSlugSuccess] = useState("");
   const { toast } = useToast();
   const { data } = useSession();
   const router = useRouter();
 
   const catalogueConfig: FormikConfig<TypePayloadCatalogue> = {
     initialValues: {
-      name: '',
-      description: '',
-      slug: '',
-      url: '',
-      userId: '',
+      name: "",
+      description: "",
+      slug: "",
+      url: process.env.NEXT_PUBLIC_SITE_URL + "/view/",
+      userId: "",
     },
     validationSchema: yup.object({
       name: yup.string().trim().required().max(64),
@@ -44,15 +44,15 @@ function FormAdd({}: Props) {
       try {
         console.log(values);
         await addCatalogue({ ...values, userId: data?.user.id as string });
-        router.replace('/catalogue');
+        router.replace("/catalogue");
         toast({
-          variant: 'success',
-          description: 'Catalogue added successfully',
+          variant: "success",
+          description: "Catalogue added successfully",
           duration: 2000,
         });
       } catch (error: any) {
         toast({
-          variant: 'destructive',
+          variant: "destructive",
           description: error.message,
           duration: 2000,
         });
@@ -69,10 +69,10 @@ function FormAdd({}: Props) {
     try {
       const result = await checkSlug(slug);
       setSlugSuccess(result.message);
-      setSlugError('');
+      setSlugError("");
     } catch (error: any) {
       setSlugError(error.message);
-      setSlugSuccess('');
+      setSlugSuccess("");
     }
   };
 
@@ -98,7 +98,7 @@ function FormAdd({}: Props) {
           onChange={formik.handleChange}
           onBlur={formik.handleBlur}
           className={cn({
-            '!ring-destructive border-destructive':
+            "!ring-destructive border-destructive":
               formik.errors.name && formik.touched.name,
           })}
         />
@@ -120,17 +120,17 @@ function FormAdd({}: Props) {
             onChange={(e) => {
               const regex = /^[a-zA-Z0-9^-]*$/;
               if (!regex.test(e.target.value)) return;
-              formik.setFieldValue('slug', e.target.value);
+              formik.setFieldValue("slug", e.target.value);
               formik.setFieldValue(
-                'url',
-                process.env.NEXT_PUBLIC_SITE_URL + '/' + e.target.value
+                "url",
+                process.env.NEXT_PUBLIC_SITE_URL + "/view/" + e.target.value
               );
             }}
             onBlur={formik.handleBlur}
             className={cn({
-              '!ring-destructive border-destructive':
+              "!ring-destructive border-destructive":
                 formik.touched.slug && (formik.errors.slug || slugError),
-              '!ring-green-500 border-green-500':
+              "!ring-green-500 border-green-500":
                 formik.touched.slug && !formik.errors.slug && !slugError,
             })}
           />

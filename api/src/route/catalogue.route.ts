@@ -7,6 +7,7 @@ CatalogueRouter.post("/slug", catalogueController.checkSlug);
 CatalogueRouter.patch("/watch/:catalogueId", catalogueController.watch);
 CatalogueRouter.put("/:catalogueId", catalogueController.update);
 CatalogueRouter.get("/:catalogueId", catalogueController.getOne);
+CatalogueRouter.get("/slug/:slug", catalogueController.getOneBySlug);
 CatalogueRouter.delete("/:catalogueId", catalogueController.deleteCatalogue);
 CatalogueRouter.get("/", catalogueController.getAll);
 

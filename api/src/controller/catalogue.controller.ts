@@ -90,6 +90,39 @@ const getOne = async (req: Request, res: Response, next: NextFunction) => {
   }
 };
 
+const getOneBySlug = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const { slug } = req.params;
+
+    const availableCatalogue = await db.catalogue.findFirst({
+      where: {
+        slug,
+      },
+      include: {
+        products: {
+          include: {
+            attributes: true,
+            photos: true,
+            thumbnail: true,
+          },
+        },
+      },
+    });
+
+    if (!availableCatalogue) {
+      throw new ResponseError(404, "catalogue not found");
+    }
+
+    res.status(200).json(availableCatalogue);
+  } catch (error) {
+    next(error);
+  }
+};
+
 const deleteCatalogue = async (
   req: Request,
   res: Response,
@@ -286,6 +319,7 @@ export default {
   update,
   getAll,
   getOne,
+  getOneBySlug,
   watch,
   checkSlug,
   deleteCatalogue,

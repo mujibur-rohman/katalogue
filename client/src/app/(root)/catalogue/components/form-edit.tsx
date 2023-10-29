@@ -128,7 +128,7 @@ function FormEdit({ catalogue }: Props) {
               formik.setFieldValue("slug", e.target.value);
               formik.setFieldValue(
                 "url",
-                process.env.NEXT_PUBLIC_SITE_URL + "/" + e.target.value
+                process.env.NEXT_PUBLIC_SITE_URL + "/view/" + e.target.value
               );
             }}
             onBlur={formik.handleBlur}
@@ -165,9 +165,6 @@ function FormEdit({ catalogue }: Props) {
                 {formik.values.url}
               </span>
             </div>
-            {/* <div className="px-2 cursor-pointer">
-              <CopyIcon className="w-4 text-gray-500" />
-            </div> */}
           </div>
         </div>
       </div>
