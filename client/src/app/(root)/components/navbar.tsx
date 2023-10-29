@@ -9,13 +9,14 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { LogOutIcon, UserIcon } from "lucide-react";
-import { signOut } from "next-auth/react";
+import { signOut, useSession } from "next-auth/react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 
 function Navbar() {
   const router = useRouter();
+  const session = useSession();
   return (
     <nav className="bg-background flex items-center justify-between px-3 md:px-12 py-5">
       <Link href="/">
@@ -32,8 +33,8 @@ function Navbar() {
       <DropdownMenu>
         <DropdownMenuTrigger>
           <Avatar>
-            <AvatarImage src="https://github.com/shadcn.png" />
-            <AvatarFallback>CN</AvatarFallback>
+            <AvatarImage src={session.data?.user.profilePicture} />
+            <AvatarFallback>{session.data?.user.name}</AvatarFallback>
           </Avatar>
         </DropdownMenuTrigger>
         <DropdownMenuContent className="translate-x-[-25%]">

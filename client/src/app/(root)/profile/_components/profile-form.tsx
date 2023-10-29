@@ -1,14 +1,15 @@
 "use client";
 
+import { updateProfile } from "@/actions/profile";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import profileApi from "@/lib/api/profile.api";
 import { useToast } from "@/lib/hooks/use-toast";
 import { ProfileType, ResponseProfile } from "@/lib/types/profile.type";
 import { cn } from "@/lib/utils";
 import { FormikConfig, useFormik } from "formik";
+import { useSession } from "next-auth/react";
 import { useState } from "react";
 import * as yup from "yup";
 
@@ -19,10 +20,11 @@ type Props = {
 export default function ProfileForm({ profile }: Props) {
   const { toast } = useToast();
   const [blobImg, setBlobImg] = useState("");
+  const { update, data: session } = useSession();
   const profileFormConfig: FormikConfig<ProfileType> = {
     initialValues: {
       name: profile.user.name,
-      bio: profile.bio,
+      bio: profile.bio || "",
     },
     onSubmit: async (values) => {
       try {
@@ -31,7 +33,17 @@ export default function ProfileForm({ profile }: Props) {
           // @ts-ignore
           formData.append(key, values[key]);
         }
-        await profileApi.update({ userId: profile.userId, payload: formData });
+        const newProfile = await updateProfile({
+          userId: profile.userId,
+          payload: formData,
+        });
+
+        await update({
+          ...session,
+          user: {
+            profilePicture: newProfile.profilePicture as string,
+          },
+        });
         toast({
           variant: "success",
           title: "Profile Updated",

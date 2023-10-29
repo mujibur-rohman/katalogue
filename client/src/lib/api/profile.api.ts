@@ -1,5 +1,6 @@
+import { revalidatePath } from "next/cache";
 import { fetcher } from ".";
-import { ProfileType, ResponseProfile } from "../types/profile.type";
+import { ResponseProfile } from "../types/profile.type";
 
 export const profileEndpoint = "/profile";
 
@@ -12,10 +13,10 @@ const profileApi = {
     userId: string;
   }) => {
     try {
-      const res = await fetcher.put(profileEndpoint + "/a" + userId, payload);
+      const res = await fetcher.put(profileEndpoint + "/" + userId, payload);
+      revalidatePath("/profile");
       return res.data;
     } catch (error: any) {
-      console.log(error);
       if (error.response?.data) {
         throw new Error(error.response.data.errors);
       }

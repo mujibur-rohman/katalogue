@@ -188,6 +188,16 @@ const create = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const catalogue = validate(addCatalogueValidation, req.body);
 
+    const totalCatUser = await db.catalogue.count({
+      where: {
+        userId: catalogue.userId,
+      },
+    });
+
+    if (totalCatUser >= 6) {
+      throw new ResponseError(403, "catalogue has reached the maximum");
+    }
+
     const availableSlug = await db.catalogue.count({
       where: {
         slug: catalogue.slug,

@@ -38,8 +38,8 @@ function FormAddProduct({ attributes }: { attributes: TypeAttribute[] }) {
       description: "",
       price: "",
       thumbnailId: null,
-      photos: null,
-      attributes: null,
+      photos: [],
+      attributes: [],
     },
     validationSchema: yup.object({
       name: yup.string().trim().required().max(64),

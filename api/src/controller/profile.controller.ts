@@ -45,8 +45,10 @@ const changeProfile = async (
       });
 
       // delete old file
-      const filepath = `./public/images/${availableProfile.photoFilename}`;
-      fs.unlinkSync(filepath);
+      if (availableProfile.photoFilename) {
+        const filepath = `./public/images/${availableProfile.photoFilename}`;
+        fs.unlinkSync(filepath);
+      }
     }
 
     if (fileName !== null) {
@@ -60,7 +62,7 @@ const changeProfile = async (
       },
     });
 
-    await db.profile.update({
+    const data = await db.profile.update({
       where: { userId },
       data: {
         bio: profile.bio,
@@ -69,9 +71,7 @@ const changeProfile = async (
       },
     });
 
-    res.json({
-      message: "Profile update successfully",
-    });
+    res.json(data);
   } catch (error) {
     next(error);
   }

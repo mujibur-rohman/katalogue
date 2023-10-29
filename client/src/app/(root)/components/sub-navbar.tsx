@@ -7,7 +7,7 @@ import subMenus from "@/lib/constants/sub-menus";
 
 type Props = {};
 
-const subNavbarPath = ["/catalogue", "/attributes"];
+const subNavbarPath = ["/catalogue", "/attributes", "/profile"];
 
 function SubNavbar({}: Props) {
   const pathname = usePathname();
