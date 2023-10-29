@@ -2,6 +2,7 @@
 "use client";
 import { PaginationResponseProduct } from "@/actions/product";
 import ItemProduct from "./item-product";
+import DataEmpty from "@/app/(root)/components/data-empty";
 
 type Props = {
   products: PaginationResponseProduct;
@@ -9,7 +10,7 @@ type Props = {
 
 function ListOfProducts({ products }: Props) {
   if (!products.totalRows) {
-    return <h1>Data Empty</h1>;
+    return <DataEmpty />;
   }
 
   return (

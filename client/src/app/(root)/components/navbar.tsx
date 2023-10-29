@@ -12,11 +12,14 @@ import { LogOutIcon, UserIcon } from "lucide-react";
 import { signOut, useSession } from "next-auth/react";
 import Image from "next/image";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 
 function Navbar() {
   const router = useRouter();
   const session = useSession();
+  const pathname = usePathname();
+
+  if (pathname.startsWith("/view")) return null;
   return (
     <nav className="bg-background flex items-center justify-between px-3 md:px-12 py-5">
       <Link href="/">

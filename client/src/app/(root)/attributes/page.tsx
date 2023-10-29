@@ -4,6 +4,7 @@ import HeaderPage from "./components/header-page";
 import AttributeLists from "./components/attribute-lists";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
+import DataEmpty from "../components/data-empty";
 
 export default async function Attributes() {
   const session = await getServerSession(authOptions);
@@ -19,7 +20,7 @@ export default async function Attributes() {
           Total : <span>{attributes.totalRows}/10</span>
         </span>
         {!attributes.data.length ? (
-          <div>Data Kosong</div>
+          <DataEmpty />
         ) : (
           <AttributeLists attributes={attributes.data} />
         )}

@@ -17,7 +17,11 @@ function SubNavbar({}: Props) {
     ? subMenus.SUB_MENUS
     : subMenus.SUB_MENUS_CATALOGUE(catalogueId as string);
 
-  if (pathname.includes("/edit") || pathname.includes("/add")) {
+  if (
+    pathname.includes("/edit") ||
+    pathname.includes("/add") ||
+    pathname.startsWith("/view")
+  ) {
     return null;
   }
 
