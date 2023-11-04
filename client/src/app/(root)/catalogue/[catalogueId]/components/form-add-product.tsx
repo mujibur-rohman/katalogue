@@ -49,7 +49,6 @@ function FormAddProduct({ attributes }: { attributes: TypeAttribute[] }) {
     }),
     onSubmit: async (values) => {
       try {
-        console.log(values);
         await addProduct({ ...values, catalogueId: catalogueId as string });
         toast({
           variant: "success",

@@ -77,7 +77,6 @@ function FormEditProduct({
     }),
     onSubmit: async (values) => {
       try {
-        console.log(values);
         await updateProduct({
           payload: values,
           productId: parseInt(productId as string),

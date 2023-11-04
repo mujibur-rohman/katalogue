@@ -69,7 +69,6 @@ export async function deleteCatalogue(id: string) {
     revalidatePath("/catalogue");
     return catalogue.data;
   } catch (error: any) {
-    console.log(error.message);
     if (error.response?.data) {
       throw new Error(error.response.data.errors);
     }
@@ -131,6 +130,18 @@ export async function getOneCatalogue(id: string) {
     const catalogues = await fetcher.get<TypeCatalogue>(
       catalogueEndpoint + "/" + id
     );
+    return catalogues.data;
+  } catch (error: any) {
+    if (error.response?.data) {
+      throw new Error(error.response.data.errors);
+    }
+    throw new Error(error.message);
+  }
+}
+
+export async function watchCatalogue(id: string) {
+  try {
+    const catalogues = await fetcher.patch(catalogueEndpoint + "/watch/" + id);
     return catalogues.data;
   } catch (error: any) {
     if (error.response?.data) {

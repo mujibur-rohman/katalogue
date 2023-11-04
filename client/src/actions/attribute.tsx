@@ -54,7 +54,6 @@ export async function deleteAttribute(id: number) {
     revalidatePath("/attributes");
     return attributes.data;
   } catch (error: any) {
-    console.log(error.message);
     if (error.response?.data) {
       throw new Error(error.response.data.errors);
     }

@@ -26,7 +26,6 @@ const login = async (req: Request, res: Response, next: NextFunction) => {
       message: "Login Success",
     });
   } catch (e: any) {
-    console.log(e);
     next(e);
   }
 };

@@ -4,6 +4,7 @@
 import React, { useState } from "react";
 import { wrap } from "popmotion";
 import { AnimatePresence, motion } from "framer-motion";
+import { ChevronLeftCircleIcon, ChevronRightCircleIcon } from "lucide-react";
 
 const swipeConfidenceThreshold = 10000;
 const swipePower = (offset: number, velocity: number) => {
@@ -48,7 +49,7 @@ function ImageSlide({ photos }: Props) {
     },
   };
   return (
-    <React.Fragment>
+    <div className="relative">
       <div className="relative aspect-w-6 aspect-h-6 rounded-xl overflow-hidden">
         <AnimatePresence initial={false} custom={direction}>
           <motion.img
@@ -82,13 +83,21 @@ function ImageSlide({ photos }: Props) {
       </div>
       <button
         onClick={() => {
-          console.log("first");
+          paginate(-1);
+        }}
+        className="absolute z-10 top-[50%] translate-y-[-50%] left-4"
+      >
+        <ChevronLeftCircleIcon className="text-white w-10 h-10" />
+      </button>
+      <button
+        onClick={() => {
           paginate(1);
         }}
+        className="absolute z-10 top-[50%] translate-y-[-50%] right-4"
       >
-        Tambah
+        <ChevronRightCircleIcon className="text-white w-10 h-10" />
       </button>
-    </React.Fragment>
+    </div>
   );
 }
 

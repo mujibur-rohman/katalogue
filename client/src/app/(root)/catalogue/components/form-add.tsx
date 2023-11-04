@@ -42,7 +42,6 @@ function FormAdd({}: Props) {
     }),
     onSubmit: async (values) => {
       try {
-        console.log(values);
         await addCatalogue({ ...values, userId: data?.user.id as string });
         router.replace("/catalogue");
         toast({
