@@ -57,6 +57,7 @@ function ItemCatalogue({ catalogue }: Props) {
               onClick={() => {
                 setModalDelete(false);
               }}
+              aria-label="Cancel"
             >
               Cancel
             </Button>
@@ -67,6 +68,7 @@ function ItemCatalogue({ catalogue }: Props) {
                 setModalDelete(false);
                 handleDelete();
               }}
+              aria-label="Delete"
             >
               Delete
             </Button>
@@ -79,14 +81,15 @@ function ItemCatalogue({ catalogue }: Props) {
           <div className="flex gap-2">
             <Tooltip>
               <TooltipTrigger>
-                <div
+                <button
+                  aria-label="Delete"
                   onClick={() => {
                     setModalDelete(true);
                   }}
                   className="flex gap-2 rounded p-1 cursor-pointer"
                 >
                   <TrashIcon className="w-5" strokeWidth="1.25" />
-                </div>
+                </button>
               </TooltipTrigger>
               <TooltipContent>
                 <p>Delete</p>
@@ -94,14 +97,15 @@ function ItemCatalogue({ catalogue }: Props) {
             </Tooltip>
             <Tooltip>
               <TooltipTrigger>
-                <div
+                <button
+                  aria-label="Update"
                   onClick={() => {
                     router.push(pathname + "/edit/" + catalogue.id);
                   }}
                   className="flex gap-2 rounded p-1 cursor-pointer"
                 >
                   <EditIcon className="w-5" strokeWidth="1.25" />
-                </div>
+                </button>
               </TooltipTrigger>
               <TooltipContent>
                 <p>Edit</p>

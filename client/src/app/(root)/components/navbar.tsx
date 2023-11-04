@@ -36,7 +36,11 @@ function Navbar() {
       <DropdownMenu>
         <DropdownMenuTrigger>
           <Avatar>
-            <AvatarImage src={session.data?.user.profilePicture} />
+            <AvatarImage
+              src={session.data?.user.profilePicture}
+              alt="Photo Profile"
+              aria-label="Avatar"
+            />
             <AvatarFallback>{session.data?.user.name}</AvatarFallback>
           </Avatar>
         </DropdownMenuTrigger>

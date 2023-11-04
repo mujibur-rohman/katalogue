@@ -10,8 +10,7 @@ type Props = {
 
 async function ListCatalogue({ params: { slug } }: Props) {
   const catalogue = await getOneCatalogueBySlug(slug);
-  const wathced = await watchCatalogue(catalogue.id);
-  console.log(wathced);
+  await watchCatalogue(catalogue.id);
   return (
     <div className="p-10">
       <h1 className="text-xl font-semibold">{catalogue.name}</h1>
