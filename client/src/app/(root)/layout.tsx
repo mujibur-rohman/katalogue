@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import Navbar from "./components/navbar";
 import SubNavbar from "./components/sub-navbar";
 import React from "react";
-import SUB_MENUS from "@/lib/constants/sub-menus";
 
 export const metadata: Metadata = {
   title: "Katalogue",

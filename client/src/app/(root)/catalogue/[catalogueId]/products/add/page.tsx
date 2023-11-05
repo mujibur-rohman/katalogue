@@ -12,8 +12,6 @@ async function AddProduct() {
     limit: -1,
   });
 
-  attributes.data;
-
   return (
     <div className="p-base">
       <FormAddProduct attributes={attributes.data} />
