@@ -304,6 +304,7 @@ const update = async (req: Request, res: Response, next: NextFunction) => {
         name: catalogue.name,
         description: catalogue.description,
         slug: catalogue.slug,
+        url: catalogue.url,
       },
     });
     res.status(200).json({
