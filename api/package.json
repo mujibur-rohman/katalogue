@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "dev": "npx nodemon",
-    "build": "tsc --outDir build",
+    "build": "npx tsc --outDir build",
     "start": "node build/index.js"
   },
   "keywords": [],
