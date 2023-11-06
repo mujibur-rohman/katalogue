@@ -6,8 +6,9 @@ generator client {
 }
 
 datasource db {
-  provider = "mysql"
-  url      = env("DATABASE_URL")
+  provider = "postgresql"
+  url = env("POSTGRES_PRISMA_URL") // uses connection pooling
+  directUrl = env("POSTGRES_URL_NON_POOLING") // uses a direct connection
 }
 
 model Profile {
@@ -25,7 +26,7 @@ model User {
   password   String?     @db.VarChar(255)
   name       String      @db.VarChar(255)
   provider   String      @db.VarChar(32)
-  token      String?     @db.LongText()
+  token      String?     @db.Text()
   profile    Profile?
   attributes Attribute[]
   catalogues Catalogue[]
@@ -34,7 +35,7 @@ model User {
 model Catalogue {
   id            String      @db.VarChar(255) @unique
   name          String      @db.VarChar(255)
-  description   String?     @db.LongText()
+  description   String?     @db.Text()
   url           String      @db.VarChar(255)
   slug          String      @db.VarChar(255)
   visitCount    Int         @default(0)
@@ -46,7 +47,7 @@ model Catalogue {
 model Product {
    id           Int         @id @default(autoincrement())
    name         String      @db.VarChar(255)
-   description  String      @db.LongText()
+   description  String      @db.Text()
    price        String      @db.VarChar(64)
    photos       Photo[]
    thumbnail    Thumbnail?
