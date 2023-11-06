@@ -1,5 +1,6 @@
 node_modules
 /node_modules
 api/.env
+api/build
 client/.env
 client/.next
